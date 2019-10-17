@@ -13,7 +13,7 @@ intercept-build --override-compiler ../openconnect-rust/build-openconnect-osx.sh
 
 cd $cd
 # # macOS Catalina 10.15 has that clang version
-../c2rust/target/debug/c2rust transpile -o $PWD ../openconnect/compile_commands.json -- \
+../c2rust/target/release/c2rust transpile -o $PWD ../openconnect/compile_commands.json -- \
     -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include \
     -I /Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include
 

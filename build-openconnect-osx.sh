@@ -17,6 +17,7 @@
 # https://github.com/openconnect/openconnect
 # git clone git@github.com:openconnect/openconnect.git ../openconnect
 # cd ../openconnect
+# ../openconnect-rust/build-openconnect-osx.sh
 
 export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
 export PATH="/usr/local/opt/gettext/bin:$PATH"
