@@ -1,5 +1,5 @@
 [package]
-name = "openconnect-rust"
+name = "openconnect2"
 version = "0.1.0"
 authors = ["Cameron Taggart <cameron.taggart@gmail.com>"]
 edition = "2018"

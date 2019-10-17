@@ -3,6 +3,62 @@
 #![feature(c_variadic, const_raw_ptr_to_usize_cast, extern_types, main,
            ptr_wrapping_offset_from)]
 extern crate libc;
+
+mod library;
+mod openssl;
+mod http_auth;
+mod ssl;
+mod http;
+mod xml;
+mod mainloop;
+mod version;
+
+use crate::version::openconnect_version_str;
+use crate::mainloop::openconnect_mainloop;
+use crate::ssl::openconnect_fopen_utf8;
+use crate::library::openconnect_set_token_mode;
+use crate::openssl::openconnect_free_cert_info;
+use crate::openssl::openconnect_get_peer_cert_details;
+use crate::ssl::openconnect_open_utf8;
+use crate::library::openconnect_get_hostname;
+use crate::library::openconnect_obtain_cookie;
+use crate::library::openconnect_parse_url;
+use crate::ssl::openconnect_passphrase_from_fsid;
+use crate::http::openconnect_set_http_proxy;
+use crate::http_auth::openconnect_set_http_auth;
+use crate::http_auth::openconnect_set_proxy_auth;
+use crate::library::openconnect_get_peer_cert_hash;
+use crate::library::openconnect_check_peer_cert_hash;
+use crate::library::openconnect_set_loglevel;
+use crate::library::openconnect_get_dtls_compression;
+use crate::library::openconnect_get_cstp_compression;
+use crate::library::openconnect_get_ip_info;
+use crate::library::openconnect_setup_dtls;
+use crate::library::openconnect_vpninfo_free;
+use crate::library::openconnect_setup_cmd_pipe;
+use crate::library::openconnect_override_getaddrinfo;
+use crate::library::openconnect_set_pass_tos;
+use crate::library::openconnect_set_mobile_info;
+use crate::library::openconnect_set_reported_os;
+use crate::library::openconnect_set_dpd;
+use crate::library::openconnect_set_reqmtu;
+use crate::library::openconnect_set_xmlpost;
+use crate::library::openconnect_set_system_trust;
+use crate::library::openconnect_set_pfs;
+use crate::library::openconnect_set_cafile;
+use crate::library::openconnect_set_compression_mode;
+use crate::library::openconnect_set_protocol;
+use crate::library::openconnect_set_localname;
+use crate::library::openconnect_free_supported_protocols;
+use crate::library::openconnect_has_system_key_support;
+use crate::library::openconnect_has_yubioath_support;
+use crate::library::openconnect_has_oath_support;
+use crate::library::openconnect_has_stoken_support;
+use crate::library::openconnect_has_tss2_blob_support;
+use crate::library::openconnect_has_tss_blob_support;
+use crate::library::openconnect_get_supported_protocols;
+use crate::library::openconnect_has_pkcs11_support;
+
 extern "C" {
     /* hold a buncha junk that would grow the ABI */
     pub type __sFILEX;
@@ -359,170 +415,170 @@ extern "C" {
     #[no_mangle]
     fn getaddrinfo(_: *const libc::c_char, _: *const libc::c_char,
                    _: *const addrinfo, _: *mut *mut addrinfo) -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_get_peer_cert_hash(vpninfo: *mut openconnect_info)
-     -> *const libc::c_char;
-    #[no_mangle]
-    fn openconnect_check_peer_cert_hash(vpninfo: *mut openconnect_info,
-                                        old_hash: *const libc::c_char)
-     -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_get_peer_cert_details(vpninfo: *mut openconnect_info)
-     -> *mut libc::c_char;
-    #[no_mangle]
-    fn openconnect_free_cert_info(vpninfo: *mut openconnect_info,
-                                  buf: *mut libc::c_void);
-    #[no_mangle]
-    fn openconnect_set_http_auth(vpninfo: *mut openconnect_info,
-                                 methods: *const libc::c_char) -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_set_proxy_auth(vpninfo: *mut openconnect_info,
-                                  methods: *const libc::c_char)
-     -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_set_http_proxy(vpninfo: *mut openconnect_info,
-                                  proxy: *const libc::c_char) -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_passphrase_from_fsid(vpninfo: *mut openconnect_info)
-     -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_obtain_cookie(vpninfo: *mut openconnect_info)
-     -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_init_ssl() -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_get_cstp_compression(_: *mut openconnect_info)
-     -> *const libc::c_char;
-    #[no_mangle]
-    fn openconnect_get_dtls_compression(_: *mut openconnect_info)
-     -> *const libc::c_char;
-    #[no_mangle]
-    fn openconnect_get_hostname(_: *mut openconnect_info)
-     -> *const libc::c_char;
-    #[no_mangle]
-    fn openconnect_set_localname(_: *mut openconnect_info,
-                                 _: *const libc::c_char) -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_set_token_callbacks(_: *mut openconnect_info,
-                                       tokdata: *mut libc::c_void,
-                                       _: openconnect_lock_token_vfn,
-                                       _: openconnect_unlock_token_vfn)
-     -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_set_token_mode(_: *mut openconnect_info,
-                                  _: oc_token_mode_t,
-                                  token_str: *const libc::c_char)
-     -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_set_compression_mode(_: *mut openconnect_info,
-                                        _: oc_compression_mode_t)
-     -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_set_cafile(_: *mut openconnect_info,
-                              _: *const libc::c_char) -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_set_system_trust(vpninfo: *mut openconnect_info,
-                                    val: libc::c_uint);
-    #[no_mangle]
-    fn openconnect_set_xmlpost(_: *mut openconnect_info, enable: libc::c_int);
-    #[no_mangle]
-    fn openconnect_set_reported_os(_: *mut openconnect_info,
-                                   os: *const libc::c_char) -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_set_mobile_info(vpninfo: *mut openconnect_info,
-                                   mobile_platform_version:
-                                       *const libc::c_char,
-                                   mobile_device_type: *const libc::c_char,
-                                   mobile_device_uniqueid:
-                                       *const libc::c_char) -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_set_reqmtu(_: *mut openconnect_info, reqmtu: libc::c_int);
-    #[no_mangle]
-    fn openconnect_set_dpd(_: *mut openconnect_info,
-                           min_seconds: libc::c_int);
-    #[no_mangle]
-    fn openconnect_get_ip_info(_: *mut openconnect_info,
-                               info: *mut *const oc_ip_info,
-                               cstp_options: *mut *const oc_vpn_option,
-                               dtls_options: *mut *const oc_vpn_option)
-     -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_parse_url(vpninfo: *mut openconnect_info,
-                             url: *const libc::c_char) -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_set_pfs(vpninfo: *mut openconnect_info, val: libc::c_uint);
-    #[no_mangle]
-    fn openconnect_setup_cmd_pipe(vpninfo: *mut openconnect_info)
-     -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_make_cstp_connection(vpninfo: *mut openconnect_info)
-     -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_setup_dtls(vpninfo: *mut openconnect_info,
-                              dtls_attempt_period: libc::c_int)
-     -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_mainloop(vpninfo: *mut openconnect_info,
-                            reconnect_timeout: libc::c_int,
-                            reconnect_interval: libc::c_int) -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_vpninfo_new(useragent: *const libc::c_char,
-                               _: openconnect_validate_peer_cert_vfn,
-                               _: openconnect_write_new_config_vfn,
-                               _: openconnect_process_auth_form_vfn,
-                               _: openconnect_progress_vfn,
-                               privdata: *mut libc::c_void)
-     -> *mut openconnect_info;
-    #[no_mangle]
-    fn openconnect_vpninfo_free(vpninfo: *mut openconnect_info);
-    #[no_mangle]
-    fn openconnect_set_loglevel(vpninfo: *mut openconnect_info,
-                                level: libc::c_int);
-    #[no_mangle]
-    fn openconnect_set_pass_tos(vpninfo: *mut openconnect_info,
-                                enable: libc::c_int);
-    #[no_mangle]
-    fn openconnect_has_pkcs11_support() -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_has_tss_blob_support() -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_has_tss2_blob_support() -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_has_stoken_support() -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_has_oath_support() -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_has_yubioath_support() -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_has_system_key_support() -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_get_supported_protocols(protos: *mut *mut oc_vpn_proto)
-     -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_free_supported_protocols(protos: *mut oc_vpn_proto);
-    #[no_mangle]
-    fn openconnect_set_protocol(vpninfo: *mut openconnect_info,
-                                protocol: *const libc::c_char) -> libc::c_int;
-    #[no_mangle]
-    fn openconnect_override_getaddrinfo(vpninfo: *mut openconnect_info,
-                                        gai_fn: openconnect_getaddrinfo_vfn);
-    #[no_mangle]
-    static mut openconnect_version_str: *const libc::c_char;
-    #[no_mangle]
-    fn config_lookup_host(vpninfo: *mut openconnect_info,
-                          host: *const libc::c_char) -> libc::c_int;
-    #[no_mangle]
-    fn read_file_into_string(vpninfo: *mut openconnect_info,
-                             fname: *const libc::c_char,
-                             ptr: *mut *mut libc::c_char) -> ssize_t;
-    #[no_mangle]
-    fn openconnect_fopen_utf8(vpninfo: *mut openconnect_info,
-                              fname: *const libc::c_char,
-                              mode: *const libc::c_char) -> *mut FILE;
-    #[no_mangle]
-    fn openconnect_open_utf8(vpninfo: *mut openconnect_info,
-                             fname: *const libc::c_char, mode: libc::c_int)
-     -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_get_peer_cert_hash(vpninfo: *mut openconnect_info)
+    //  -> *const libc::c_char;
+    // #[no_mangle]
+    // fn openconnect_check_peer_cert_hash(vpninfo: *mut openconnect_info,
+    //                                     old_hash: *const libc::c_char)
+    //  -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_get_peer_cert_details(vpninfo: *mut openconnect_info)
+    //  -> *mut libc::c_char;
+    // #[no_mangle]
+    // fn openconnect_free_cert_info(vpninfo: *mut openconnect_info,
+    //                               buf: *mut libc::c_void);
+    // #[no_mangle]
+    // fn openconnect_set_http_auth(vpninfo: *mut openconnect_info,
+    //                              methods: *const libc::c_char) -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_set_proxy_auth(vpninfo: *mut openconnect_info,
+    //                               methods: *const libc::c_char)
+    //  -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_set_http_proxy(vpninfo: *mut openconnect_info,
+    //                               proxy: *const libc::c_char) -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_passphrase_from_fsid(vpninfo: *mut openconnect_info)
+    //  -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_obtain_cookie(vpninfo: *mut openconnect_info)
+    //  -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_init_ssl() -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_get_cstp_compression(_: *mut openconnect_info)
+    //  -> *const libc::c_char;
+    // #[no_mangle]
+    // fn openconnect_get_dtls_compression(_: *mut openconnect_info)
+    //  -> *const libc::c_char;
+    // #[no_mangle]
+    // fn openconnect_get_hostname(_: *mut openconnect_info)
+    //  -> *const libc::c_char;
+    // #[no_mangle]
+    // fn openconnect_set_localname(_: *mut openconnect_info,
+    //                              _: *const libc::c_char) -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_set_token_callbacks(_: *mut openconnect_info,
+    //                                    tokdata: *mut libc::c_void,
+    //                                    _: openconnect_lock_token_vfn,
+    //                                    _: openconnect_unlock_token_vfn)
+    //  -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_set_token_mode(_: *mut openconnect_info,
+    //                               _: oc_token_mode_t,
+    //                               token_str: *const libc::c_char)
+    //  -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_set_compression_mode(_: *mut openconnect_info,
+    //                                     _: oc_compression_mode_t)
+    //  -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_set_cafile(_: *mut openconnect_info,
+    //                           _: *const libc::c_char) -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_set_system_trust(vpninfo: *mut openconnect_info,
+    //                                 val: libc::c_uint);
+    // #[no_mangle]
+    // fn openconnect_set_xmlpost(_: *mut openconnect_info, enable: libc::c_int);
+    // #[no_mangle]
+    // fn openconnect_set_reported_os(_: *mut openconnect_info,
+    //                                os: *const libc::c_char) -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_set_mobile_info(vpninfo: *mut openconnect_info,
+    //                                mobile_platform_version:
+    //                                    *const libc::c_char,
+    //                                mobile_device_type: *const libc::c_char,
+    //                                mobile_device_uniqueid:
+    //                                    *const libc::c_char) -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_set_reqmtu(_: *mut openconnect_info, reqmtu: libc::c_int);
+    // #[no_mangle]
+    // fn openconnect_set_dpd(_: *mut openconnect_info,
+    //                        min_seconds: libc::c_int);
+    // #[no_mangle]
+    // fn openconnect_get_ip_info(_: *mut openconnect_info,
+    //                            info: *mut *const oc_ip_info,
+    //                            cstp_options: *mut *const oc_vpn_option,
+    //                            dtls_options: *mut *const oc_vpn_option)
+    //  -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_parse_url(vpninfo: *mut openconnect_info,
+    //                          url: *const libc::c_char) -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_set_pfs(vpninfo: *mut openconnect_info, val: libc::c_uint);
+    // #[no_mangle]
+    // fn openconnect_setup_cmd_pipe(vpninfo: *mut openconnect_info)
+    //  -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_make_cstp_connection(vpninfo: *mut openconnect_info)
+    //  -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_setup_dtls(vpninfo: *mut openconnect_info,
+    //                           dtls_attempt_period: libc::c_int)
+    //  -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_mainloop(vpninfo: *mut openconnect_info,
+    //                         reconnect_timeout: libc::c_int,
+    //                         reconnect_interval: libc::c_int) -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_vpninfo_new(useragent: *const libc::c_char,
+    //                            _: openconnect_validate_peer_cert_vfn,
+    //                            _: openconnect_write_new_config_vfn,
+    //                            _: openconnect_process_auth_form_vfn,
+    //                            _: openconnect_progress_vfn,
+    //                            privdata: *mut libc::c_void)
+    //  -> *mut openconnect_info;
+    // #[no_mangle]
+    // fn openconnect_vpninfo_free(vpninfo: *mut openconnect_info);
+    // #[no_mangle]
+    // fn openconnect_set_loglevel(vpninfo: *mut openconnect_info,
+    //                             level: libc::c_int);
+    // #[no_mangle]
+    // fn openconnect_set_pass_tos(vpninfo: *mut openconnect_info,
+    //                             enable: libc::c_int);
+    // #[no_mangle]
+    // fn openconnect_has_pkcs11_support() -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_has_tss_blob_support() -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_has_tss2_blob_support() -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_has_stoken_support() -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_has_oath_support() -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_has_yubioath_support() -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_has_system_key_support() -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_get_supported_protocols(protos: *mut *mut oc_vpn_proto)
+    //  -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_free_supported_protocols(protos: *mut oc_vpn_proto);
+    // #[no_mangle]
+    // fn openconnect_set_protocol(vpninfo: *mut openconnect_info,
+    //                             protocol: *const libc::c_char) -> libc::c_int;
+    // #[no_mangle]
+    // fn openconnect_override_getaddrinfo(vpninfo: *mut openconnect_info,
+    //                                     gai_fn: openconnect_getaddrinfo_vfn);
+    // #[no_mangle]
+    // static mut openconnect_version_str: *const libc::c_char;
+    // #[no_mangle]
+    // fn config_lookup_host(vpninfo: *mut openconnect_info,
+    //                       host: *const libc::c_char) -> libc::c_int;
+    // #[no_mangle]
+    // fn read_file_into_string(vpninfo: *mut openconnect_info,
+    //                          fname: *const libc::c_char,
+    //                          ptr: *mut *mut libc::c_char) -> ssize_t;
+    // #[no_mangle]
+    // fn openconnect_fopen_utf8(vpninfo: *mut openconnect_info,
+    //                           fname: *const libc::c_char,
+    //                           mode: *const libc::c_char) -> *mut FILE;
+    // #[no_mangle]
+    // fn openconnect_open_utf8(vpninfo: *mut openconnect_info,
+    //                          fname: *const libc::c_char, mode: libc::c_int)
+    //  -> libc::c_int;
     /* codeset name */
     /* string for formatting date and time */
     /* date format string */
