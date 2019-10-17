@@ -1,3 +1,4 @@
+#![feature(linkage)]
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case,
          non_upper_case_globals, unused_assignments, unused_mut)]
 #![feature(c_variadic, const_raw_ptr_to_usize_cast, extern_types, main,
@@ -13,6 +14,12 @@ mod xml;
 mod mainloop;
 mod version;
 
+use crate::library::oc_vpn_option;
+use crate::library::oc_stats;
+use crate::library::oc_auth_form;
+use crate::library::openconnect_info;
+use crate::library::openconnect_set_token_callbacks;
+use crate::xml::read_file_into_string;
 use crate::version::openconnect_version_str;
 use crate::mainloop::openconnect_mainloop;
 use crate::ssl::openconnect_fopen_utf8;
@@ -61,33 +68,33 @@ use crate::library::openconnect_has_pkcs11_support;
 
 extern "C" {
     /* hold a buncha junk that would grow the ABI */
-    pub type __sFILEX;
-    pub type pxProxyFactory_;
-    pub type ssl3_buf_freelist_st;
-    pub type evp_pkey_ctx_st;
-    pub type engine_st;
-    pub type ASN1_VALUE_st;
-    pub type X509_VERIFY_PARAM_ID_st;
-    pub type x509_crl_method_st;
-    pub type stack_st_GENERAL_NAMES;
-    pub type ISSUING_DIST_POINT_st;
-    pub type AUTHORITY_KEYID_st;
-    pub type NAME_CONSTRAINTS_st;
-    pub type stack_st_GENERAL_NAME;
-    pub type stack_st_DIST_POINT;
-    pub type X509_POLICY_CACHE_st;
-    pub type ec_key_st;
-    pub type bignum_ctx;
-    pub type bn_blinding_st;
-    pub type evp_pkey_asn1_method_st;
-    pub type X509_POLICY_TREE_st;
-    pub type cert_st;
-    pub type sess_cert_st;
-    pub type ssl3_enc_method;
-    pub type stack_st_OCSP_RESPID;
-    pub type _pqueue;
-    pub type internal_state;
-    pub type oc_pcsc_ctx;
+    // pub type __sFILEX;
+    // pub type pxProxyFactory_;
+    // pub type ssl3_buf_freelist_st;
+    // pub type evp_pkey_ctx_st;
+    // pub type engine_st;
+    // pub type ASN1_VALUE_st;
+    // pub type X509_VERIFY_PARAM_ID_st;
+    // pub type x509_crl_method_st;
+    // pub type stack_st_GENERAL_NAMES;
+    // pub type ISSUING_DIST_POINT_st;
+    // pub type AUTHORITY_KEYID_st;
+    // pub type NAME_CONSTRAINTS_st;
+    // pub type stack_st_GENERAL_NAME;
+    // pub type stack_st_DIST_POINT;
+    // pub type X509_POLICY_CACHE_st;
+    // pub type ec_key_st;
+    // pub type bignum_ctx;
+    // pub type bn_blinding_st;
+    // pub type evp_pkey_asn1_method_st;
+    // pub type X509_POLICY_TREE_st;
+    // pub type cert_st;
+    // pub type sess_cert_st;
+    // pub type ssl3_enc_method;
+    // pub type stack_st_OCSP_RESPID;
+    // pub type _pqueue;
+    // pub type internal_state;
+    // pub type oc_pcsc_ctx;
     /*
  * stoken.h - public libstoken library interface
  *
@@ -116,9 +123,9 @@ extern "C" {
  *   #define STOKEN_CHECK_VER(x,y) 0
  *   #endif
  */
-    pub type stoken_ctx;
-    pub type gss_ctx_id_struct;
-    pub type gss_name_struct;
+    // pub type stoken_ctx;
+    // pub type gss_ctx_id_struct;
+    // pub type gss_name_struct;
     /*
  * Summary: string dictionary
  * Description: dictionary of reusable strings, just used to avoid allocation
@@ -131,7 +138,7 @@ extern "C" {
     /*
  * The dictionary.
  */
-    pub type _xmlDict;
+    // pub type _xmlDict;
     /*
  * Copyright (c) 2000, 2005, 2007, 2009, 2010 Apple Inc. All rights reserved.
  *
@@ -191,45 +198,45 @@ extern "C" {
  *
  *	@(#)stdio.h	8.5 (Berkeley) 4/29/95
  */
-    #[no_mangle]
-    static mut __stdinp: *mut FILE;
-    #[no_mangle]
-    static mut __stdoutp: *mut FILE;
-    #[no_mangle]
-    static mut __stderrp: *mut FILE;
-    #[no_mangle]
-    fn fclose(_: *mut FILE) -> libc::c_int;
-    #[no_mangle]
-    fn feof(_: *mut FILE) -> libc::c_int;
-    #[no_mangle]
-    fn fflush(_: *mut FILE) -> libc::c_int;
-    #[no_mangle]
-    fn fgets(_: *mut libc::c_char, _: libc::c_int, _: *mut FILE)
-     -> *mut libc::c_char;
-    /* (DARWIN_UNLIMITED_STREAMS || _DARWIN_C_SOURCE) */
-    #[no_mangle]
-    fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
-    #[no_mangle]
-    fn fputs(_: *const libc::c_char, _: *mut FILE) -> libc::c_int;
-    #[no_mangle]
-    fn fwrite(_: *const libc::c_void, _: libc::c_ulong, _: libc::c_ulong,
-              _: *mut FILE) -> libc::c_ulong;
-    #[no_mangle]
-    fn perror(_: *const libc::c_char);
-    #[no_mangle]
-    fn printf(_: *const libc::c_char, _: ...) -> libc::c_int;
-    #[no_mangle]
-    fn vfprintf(_: *mut FILE, _: *const libc::c_char, _: ::std::ffi::VaList)
-     -> libc::c_int;
-    /* (DARWIN_UNLIMITED_STREAMS || _DARWIN_C_SOURCE) */
-    #[no_mangle]
-    fn fileno(_: *mut FILE) -> libc::c_int;
-    #[no_mangle]
-    fn getline(__linep: *mut *mut libc::c_char, __linecapp: *mut size_t,
-               __stream: *mut FILE) -> ssize_t;
-    #[no_mangle]
-    fn vasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char,
-                 _: ::std::ffi::VaList) -> libc::c_int;
+    // #[no_mangle]
+    // static mut __stdinp: *mut FILE;
+    // #[no_mangle]
+    // static mut __stdoutp: *mut FILE;
+    // #[no_mangle]
+    // static mut __stderrp: *mut FILE;
+    // #[no_mangle]
+    // fn fclose(_: *mut FILE) -> libc::c_int;
+    // #[no_mangle]
+    // fn feof(_: *mut FILE) -> libc::c_int;
+    // #[no_mangle]
+    // fn fflush(_: *mut FILE) -> libc::c_int;
+    // #[no_mangle]
+    // fn fgets(_: *mut libc::c_char, _: libc::c_int, _: *mut FILE)
+    //  -> *mut libc::c_char;
+    // /* (DARWIN_UNLIMITED_STREAMS || _DARWIN_C_SOURCE) */
+    // #[no_mangle]
+    // fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
+    // #[no_mangle]
+    // fn fputs(_: *const libc::c_char, _: *mut FILE) -> libc::c_int;
+    // #[no_mangle]
+    // fn fwrite(_: *const libc::c_void, _: libc::c_ulong, _: libc::c_ulong,
+    //           _: *mut FILE) -> libc::c_ulong;
+    // #[no_mangle]
+    // fn perror(_: *const libc::c_char);
+    // #[no_mangle]
+    // fn printf(_: *const libc::c_char, _: ...) -> libc::c_int;
+    // #[no_mangle]
+    // fn vfprintf(_: *mut FILE, _: *const libc::c_char, _: ::std::ffi::VaList)
+    //  -> libc::c_int;
+    // /* (DARWIN_UNLIMITED_STREAMS || _DARWIN_C_SOURCE) */
+    // #[no_mangle]
+    // fn fileno(_: *mut FILE) -> libc::c_int;
+    // #[no_mangle]
+    // fn getline(__linep: *mut *mut libc::c_char, __linecapp: *mut size_t,
+    //            __stream: *mut FILE) -> ssize_t;
+    // #[no_mangle]
+    // fn vasprintf(_: *mut *mut libc::c_char, _: *const libc::c_char,
+    //              _: ::std::ffi::VaList) -> libc::c_int;
     /*
  * Copyright (c) 2018 Apple Computer, Inc. All rights reserved.
  *
@@ -1882,104 +1889,104 @@ pub struct addrinfo {
  */
 /* ***************************************************************************/
 /* Enumeration of supported VPN protocols */
-#[derive ( Copy, Clone )]
-#[repr(C)]
-pub struct oc_vpn_proto {
-    pub name: *const libc::c_char,
-    pub pretty_name: *const libc::c_char,
-    pub description: *const libc::c_char,
-    pub flags: libc::c_uint,
-}
+// #[derive ( Copy, Clone )]
+// #[repr(C)]
+// pub struct oc_vpn_proto {
+//     pub name: *const libc::c_char,
+//     pub pretty_name: *const libc::c_char,
+//     pub description: *const libc::c_char,
+//     pub flags: libc::c_uint,
+// }
 /* ***************************************************************************/
 /* Authentication form processing */
 /* char * fields are static (owned by XML parser) and don't need to be
    freed by the form handling code — except for value, which for TEXT
    and PASSWORD options is allocated by openconnect_set_option_value()
    when process_form() interacts with the user and must be freed. */
-#[derive ( Copy, Clone )]
-#[repr(C)]
-pub struct oc_form_opt {
-    pub next: *mut oc_form_opt,
-    pub type_0: libc::c_int,
-    pub name: *mut libc::c_char,
-    pub label: *mut libc::c_char,
-    pub _value: *mut libc::c_char,
-    pub flags: libc::c_uint,
-    pub reserved: *mut libc::c_void,
-}
+// #[derive ( Copy, Clone )]
+// #[repr(C)]
+// pub struct oc_form_opt {
+//     pub next: *mut oc_form_opt,
+//     pub type_0: libc::c_int,
+//     pub name: *mut libc::c_char,
+//     pub label: *mut libc::c_char,
+//     pub _value: *mut libc::c_char,
+//     pub flags: libc::c_uint,
+//     pub reserved: *mut libc::c_void,
+// }
 /* All fields are static, owned by the XML parser */
-#[derive ( Copy, Clone )]
-#[repr(C)]
-pub struct oc_choice {
-    pub name: *mut libc::c_char,
-    pub label: *mut libc::c_char,
-    pub auth_type: *mut libc::c_char,
-    pub override_name: *mut libc::c_char,
-    pub override_label: *mut libc::c_char,
-    pub second_auth: libc::c_int,
-    pub secondary_username: *mut libc::c_char,
-    pub secondary_username_editable: libc::c_int,
-    pub noaaa: libc::c_int,
-}
-#[derive ( Copy, Clone )]
-#[repr(C)]
-pub struct oc_form_opt_select {
-    pub form: oc_form_opt,
-    pub nr_choices: libc::c_int,
-    pub choices: *mut *mut oc_choice,
-}
+// #[derive ( Copy, Clone )]
+// #[repr(C)]
+// pub struct oc_choice {
+//     pub name: *mut libc::c_char,
+//     pub label: *mut libc::c_char,
+//     pub auth_type: *mut libc::c_char,
+//     pub override_name: *mut libc::c_char,
+//     pub override_label: *mut libc::c_char,
+//     pub second_auth: libc::c_int,
+//     pub secondary_username: *mut libc::c_char,
+//     pub secondary_username_editable: libc::c_int,
+//     pub noaaa: libc::c_int,
+// }
+// #[derive ( Copy, Clone )]
+// #[repr(C)]
+// pub struct oc_form_opt_select {
+//     pub form: oc_form_opt,
+//     pub nr_choices: libc::c_int,
+//     pub choices: *mut *mut oc_choice,
+// }
 /* All char * fields are static, owned by the XML parser */
-#[derive ( Copy, Clone )]
-#[repr(C)]
-pub struct oc_auth_form {
-    pub banner: *mut libc::c_char,
-    pub message: *mut libc::c_char,
-    pub error: *mut libc::c_char,
-    pub auth_id: *mut libc::c_char,
-    pub method: *mut libc::c_char,
-    pub action: *mut libc::c_char,
-    pub opts: *mut oc_form_opt,
-    pub authgroup_opt: *mut oc_form_opt_select,
-    pub authgroup_selection: libc::c_int,
-}
-#[derive ( Copy, Clone )]
-#[repr(C)]
-pub struct oc_split_include {
-    pub route: *const libc::c_char,
-    pub next: *mut oc_split_include,
-}
-#[derive ( Copy, Clone )]
-#[repr(C)]
-pub struct oc_ip_info {
-    pub addr: *const libc::c_char,
-    pub netmask: *const libc::c_char,
-    pub addr6: *const libc::c_char,
-    pub netmask6: *const libc::c_char,
-    pub dns: [*const libc::c_char; 3],
-    pub nbns: [*const libc::c_char; 3],
-    pub domain: *const libc::c_char,
-    pub proxy_pac: *const libc::c_char,
-    pub mtu: libc::c_int,
-    pub split_dns: *mut oc_split_include,
-    pub split_includes: *mut oc_split_include,
-    pub split_excludes: *mut oc_split_include,
-    pub gateway_addr: *mut libc::c_char,
-}
-#[derive ( Copy, Clone )]
-#[repr(C)]
-pub struct oc_vpn_option {
-    pub option: *mut libc::c_char,
-    pub value: *mut libc::c_char,
-    pub next: *mut oc_vpn_option,
-}
-#[derive ( Copy, Clone )]
-#[repr(C)]
-pub struct oc_stats {
-    pub tx_pkts: uint64_t,
-    pub tx_bytes: uint64_t,
-    pub rx_pkts: uint64_t,
-    pub rx_bytes: uint64_t,
-}
+// #[derive ( Copy, Clone )]
+// #[repr(C)]
+// pub struct oc_auth_form {
+//     pub banner: *mut libc::c_char,
+//     pub message: *mut libc::c_char,
+//     pub error: *mut libc::c_char,
+//     pub auth_id: *mut libc::c_char,
+//     pub method: *mut libc::c_char,
+//     pub action: *mut libc::c_char,
+//     pub opts: *mut oc_form_opt,
+//     pub authgroup_opt: *mut oc_form_opt_select,
+//     pub authgroup_selection: libc::c_int,
+// }
+// #[derive ( Copy, Clone )]
+// #[repr(C)]
+// pub struct oc_split_include {
+//     pub route: *const libc::c_char,
+//     pub next: *mut oc_split_include,
+// }
+// #[derive ( Copy, Clone )]
+// #[repr(C)]
+// pub struct oc_ip_info {
+//     pub addr: *const libc::c_char,
+//     pub netmask: *const libc::c_char,
+//     pub addr6: *const libc::c_char,
+//     pub netmask6: *const libc::c_char,
+//     pub dns: [*const libc::c_char; 3],
+//     pub nbns: [*const libc::c_char; 3],
+//     pub domain: *const libc::c_char,
+//     pub proxy_pac: *const libc::c_char,
+//     pub mtu: libc::c_int,
+//     pub split_dns: *mut oc_split_include,
+//     pub split_includes: *mut oc_split_include,
+//     pub split_excludes: *mut oc_split_include,
+//     pub gateway_addr: *mut libc::c_char,
+// }
+// #[derive ( Copy, Clone )]
+// #[repr(C)]
+// pub struct oc_vpn_option {
+//     pub option: *mut libc::c_char,
+//     pub value: *mut libc::c_char,
+//     pub next: *mut oc_vpn_option,
+// }
+// #[derive ( Copy, Clone )]
+// #[repr(C)]
+// pub struct oc_stats {
+//     pub tx_pkts: uint64_t,
+//     pub tx_bytes: uint64_t,
+//     pub rx_pkts: uint64_t,
+//     pub rx_bytes: uint64_t,
+// }
 /* ***************************************************************************/
 /* Byte commands to write into the cmd_fd:
  *
@@ -1993,236 +2000,236 @@ pub struct oc_stats {
  *    cookie.
  *  STATS calls the stats_handler.
  */
-#[derive ( Copy, Clone )]
-#[repr(C)]
-pub struct openconnect_info {
-    pub proto: *const vpn_proto,
-    pub ic_legacy_to_utf8: iconv_t,
-    pub ic_utf8_to_legacy: iconv_t,
-    pub redirect_url: *mut libc::c_char,
-    pub redirect_type: libc::c_int,
-    pub esp_hmac: libc::c_uchar,
-    pub esp_enc: libc::c_uchar,
-    pub esp_compr: libc::c_uchar,
-    pub esp_replay_protect: uint32_t,
-    pub esp_lifetime_bytes: uint32_t,
-    pub esp_lifetime_seconds: uint32_t,
-    pub esp_ssl_fallback: uint32_t,
-    pub current_esp_in: libc::c_int,
-    pub old_esp_maxseq: libc::c_int,
-    pub esp_in: [esp; 2],
-    pub esp_out: esp,
-    pub enc_key_len: libc::c_int,
-    pub hmac_key_len: libc::c_int,
-    pub hmac_out_len: libc::c_int,
-    pub esp_magic: uint32_t,
-    pub tncc_fd: libc::c_int,
-    pub csd_xmltag: *const libc::c_char,
-    pub csd_nostub: libc::c_int,
-    pub platname: *mut libc::c_char,
-    pub mobile_platform_version: *mut libc::c_char,
-    pub mobile_device_type: *mut libc::c_char,
-    pub mobile_device_uniqueid: *mut libc::c_char,
-    pub csd_token: *mut libc::c_char,
-    pub csd_ticket: *mut libc::c_char,
-    pub csd_stuburl: *mut libc::c_char,
-    pub csd_starturl: *mut libc::c_char,
-    pub csd_waiturl: *mut libc::c_char,
-    pub csd_preurl: *mut libc::c_char,
-    pub csd_scriptname: *mut libc::c_char,
-    pub opaque_srvdata: *mut xmlNode,
-    pub profile_url: *mut libc::c_char,
-    pub profile_sha1: *mut libc::c_char,
-    pub proxy_factory: *mut pxProxyFactory,
-    pub proxy_type: *mut libc::c_char,
-    pub proxy: *mut libc::c_char,
-    pub proxy_port: libc::c_int,
-    pub proxy_fd: libc::c_int,
-    pub proxy_user: *mut libc::c_char,
-    pub proxy_pass: *mut libc::c_char,
-    pub proxy_close_during_auth: libc::c_int,
-    pub retry_on_auth_fail: libc::c_int,
-    pub try_http_auth: libc::c_int,
-    pub http_auth: [http_auth_state; 4],
-    pub proxy_auth: [http_auth_state; 4],
-    pub localname: *mut libc::c_char,
-    pub hostname: *mut libc::c_char,
-    pub unique_hostname: *mut libc::c_char,
-    pub port: libc::c_int,
-    pub urlpath: *mut libc::c_char,
-    pub cert_expire_warning: libc::c_int,
-    pub cert: *mut libc::c_char,
-    pub sslkey: *mut libc::c_char,
-    pub cert_password: *mut libc::c_char,
-    pub cafile: *mut libc::c_char,
-    pub no_system_trust: libc::c_uint,
-    pub xmlconfig: *const libc::c_char,
-    pub xmlsha1: [libc::c_char; 41],
-    pub authgroup: *mut libc::c_char,
-    pub nopasswd: libc::c_int,
-    pub xmlpost: libc::c_int,
-    pub dtls_ciphers: *mut libc::c_char,
-    pub dtls12_ciphers: *mut libc::c_char,
-    pub csd_wrapper: *mut libc::c_char,
-    pub no_http_keepalive: libc::c_int,
-    pub dump_http_traffic: libc::c_int,
-    pub token_mode: libc::c_int,
-    pub token_bypassed: libc::c_int,
-    pub token_tries: libc::c_int,
-    pub token_time: time_t,
-    pub stoken_ctx: *mut stoken_ctx,
-    pub stoken_pin: *mut libc::c_char,
-    pub stoken_concat_pin: libc::c_int,
-    pub stoken_interval: libc::c_int,
-    pub oath_secret: *mut libc::c_char,
-    pub oath_secret_len: size_t,
-    pub oath_hmac_alg: C2RustUnnamed_12,
-    pub hotp_secret_format: C2RustUnnamed_11,
-    pub pcsc: *mut oc_pcsc_ctx,
-    pub yubikey_pwhash: [libc::c_uchar; 16],
-    pub lock_token: openconnect_lock_token_vfn,
-    pub unlock_token: openconnect_unlock_token_vfn,
-    pub tok_cbdata: *mut libc::c_void,
-    pub peer_cert: *mut libc::c_void,
-    pub peer_cert_sha1_raw: [uint8_t; 20],
-    pub peer_cert_sha256_raw: [uint8_t; 32],
-    pub peer_cert_hash: *mut libc::c_char,
-    pub cert_list_handle: *mut libc::c_void,
-    pub cert_list_size: libc::c_int,
-    pub cookie: *mut libc::c_char,
-    pub cookies: *mut oc_vpn_option,
-    pub cstp_options: *mut oc_vpn_option,
-    pub dtls_options: *mut oc_vpn_option,
-    pub script_env: *mut oc_vpn_option,
-    pub csd_env: *mut oc_vpn_option,
-    pub pfs: libc::c_uint,
-    pub no_tls13: libc::c_uint,
-    pub cert_x509: *mut X509,
-    pub https_ctx: *mut SSL_CTX,
-    pub https_ssl: *mut SSL,
-    pub ttls_bio_meth: *mut BIO_METHOD,
-    pub ttls_pushbuf: *mut oc_text_buf,
-    pub ttls_eap_ident: uint8_t,
-    pub ttls_recvbuf: *mut libc::c_uchar,
-    pub ttls_recvpos: libc::c_int,
-    pub ttls_recvlen: libc::c_int,
-    pub pin_cache: *mut pin_cache,
-    pub ssl_times: keepalive_info,
-    pub owe_ssl_dpd_response: libc::c_int,
-    pub deflate_pkt_size: libc::c_int,
-    pub deflate_pkt: *mut pkt,
-    pub pending_deflated_pkt: *mut pkt,
-    pub current_ssl_pkt: *mut pkt,
-    pub oncp_control_queue: pkt_q,
-    pub oncp_rec_size: libc::c_int,
-    pub cstp_pkt: *mut pkt,
-    pub dtls_pkt: *mut pkt,
-    pub tun_pkt: *mut pkt,
-    pub pkt_trailer: libc::c_int,
-    pub inflate_strm: z_stream,
-    pub inflate_adler32: uint32_t,
-    pub deflate_strm: z_stream,
-    pub deflate_adler32: uint32_t,
-    pub disable_ipv6: libc::c_int,
-    pub reconnect_timeout: libc::c_int,
-    pub reconnect_interval: libc::c_int,
-    pub dtls_attempt_period: libc::c_int,
-    pub new_dtls_started: time_t,
-    pub dtls_ctx: *mut SSL_CTX,
-    pub dtls_ssl: *mut SSL,
-    pub cstp_cipher: *mut libc::c_char,
-    pub dtls_state: libc::c_int,
-    pub dtls_need_reconnect: libc::c_int,
-    pub dtls_times: keepalive_info,
-    pub dtls_session_id: [libc::c_uchar; 32],
-    pub dtls_secret: [libc::c_uchar; 48],
-    pub dtls_app_id: [libc::c_uchar; 32],
-    pub dtls_app_id_size: libc::c_uint,
-    pub ift_seq: uint32_t,
-    pub cisco_dtls12: libc::c_int,
-    pub dtls_cipher: *mut libc::c_char,
-    pub vpnc_script: *mut libc::c_char,
-    pub uid_csd_given: libc::c_int,
-    pub uid_csd: uid_t,
-    pub gid_csd: gid_t,
-    pub uid: uid_t,
-    pub gid: gid_t,
-    pub use_tun_script: libc::c_int,
-    pub script_tun: libc::c_int,
-    pub ifname: *mut libc::c_char,
-    pub cmd_ifname: *mut libc::c_char,
-    pub reqmtu: libc::c_int,
-    pub basemtu: libc::c_int,
-    pub banner: *const libc::c_char,
-    pub ip_info: oc_ip_info,
-    pub cstp_basemtu: libc::c_int,
-    pub idle_timeout: libc::c_int,
-    pub _select_nfds: libc::c_int,
-    pub _select_rfds: fd_set,
-    pub _select_wfds: fd_set,
-    pub _select_efds: fd_set,
-    pub tun_fd: libc::c_int,
-    pub ssl_fd: libc::c_int,
-    pub dtls_fd: libc::c_int,
-    pub dtls_tos_current: libc::c_int,
-    pub dtls_pass_tos: libc::c_int,
-    pub dtls_tos_proto: libc::c_int,
-    pub dtls_tos_optname: libc::c_int,
-    pub cmd_fd: libc::c_int,
-    pub cmd_fd_write: libc::c_int,
-    pub got_cancel_cmd: libc::c_int,
-    pub got_pause_cmd: libc::c_int,
-    pub cancel_type: libc::c_char,
-    pub incoming_queue: pkt_q,
-    pub outgoing_queue: pkt_q,
-    pub max_qlen: libc::c_int,
-    pub stats: oc_stats,
-    pub stats_handler: openconnect_stats_vfn,
-    pub peer_addrlen: socklen_t,
-    pub peer_addr: *mut sockaddr,
-    pub dtls_addr: *mut sockaddr,
-    pub dtls_local_port: libc::c_int,
-    pub req_compr: libc::c_int,
-    pub cstp_compr: libc::c_int,
-    pub dtls_compr: libc::c_int,
-    pub is_dyndns: libc::c_int,
-    pub useragent: *mut libc::c_char,
-    pub version_string: *mut libc::c_char,
-    pub quit_reason: *const libc::c_char,
-    pub verbose: libc::c_int,
-    pub cbdata: *mut libc::c_void,
-    pub validate_peer_cert: openconnect_validate_peer_cert_vfn,
-    pub write_new_config: openconnect_write_new_config_vfn,
-    pub process_auth_form: openconnect_process_auth_form_vfn,
-    pub progress: openconnect_progress_vfn,
-    pub protect_socket: openconnect_protect_socket_vfn,
-    pub getaddrinfo_override: openconnect_getaddrinfo_vfn,
-    pub setup_tun: openconnect_setup_tun_vfn,
-    pub reconnected: openconnect_reconnected_vfn,
-    pub ssl_read: Option<unsafe extern "C" fn(_: *mut openconnect_info,
-                                              _: *mut libc::c_char, _: size_t)
-                             -> libc::c_int>,
-    pub ssl_gets: Option<unsafe extern "C" fn(_: *mut openconnect_info,
-                                              _: *mut libc::c_char, _: size_t)
-                             -> libc::c_int>,
-    pub ssl_write: Option<unsafe extern "C" fn(_: *mut openconnect_info,
-                                               _: *mut libc::c_char,
-                                               _: size_t) -> libc::c_int>,
-    /* All strings are UTF-8. If operating in a legacy environment where
-   nl_langinfo(CODESET) returns anything other than UTF-8, or on Windows,
-   the library will take appropriate steps to convert back to the legacy
-   character set (or UTF-16) for file handling and wherever else it is
-   appropriate to do so. Library functions may (but probably don't yet)
-   return -EILSEQ if passed invalid UTF-8 strings. */
-    /* Unlike previous versions of openconnect, no functions will take ownership
-   of the provided strings. */
-    /* Provide environment variables to be set in the CSD trojan environment
-   before spawning it. Some callers may need to set $TMPDIR, $PATH and
-   other such things if not running from a standard UNIX-like environment.
-   To ensure that a variable is unset, pass its name with value==NULL.
-   To clear all settings and allow the CSD trojan to inherit an unmodified
-   environment, call with name==NULL. */
-}
+// #[derive ( Copy, Clone )]
+// #[repr(C)]
+// pub struct openconnect_info {
+//     pub proto: *const vpn_proto,
+//     pub ic_legacy_to_utf8: iconv_t,
+//     pub ic_utf8_to_legacy: iconv_t,
+//     pub redirect_url: *mut libc::c_char,
+//     pub redirect_type: libc::c_int,
+//     pub esp_hmac: libc::c_uchar,
+//     pub esp_enc: libc::c_uchar,
+//     pub esp_compr: libc::c_uchar,
+//     pub esp_replay_protect: uint32_t,
+//     pub esp_lifetime_bytes: uint32_t,
+//     pub esp_lifetime_seconds: uint32_t,
+//     pub esp_ssl_fallback: uint32_t,
+//     pub current_esp_in: libc::c_int,
+//     pub old_esp_maxseq: libc::c_int,
+//     pub esp_in: [esp; 2],
+//     pub esp_out: esp,
+//     pub enc_key_len: libc::c_int,
+//     pub hmac_key_len: libc::c_int,
+//     pub hmac_out_len: libc::c_int,
+//     pub esp_magic: uint32_t,
+//     pub tncc_fd: libc::c_int,
+//     pub csd_xmltag: *const libc::c_char,
+//     pub csd_nostub: libc::c_int,
+//     pub platname: *mut libc::c_char,
+//     pub mobile_platform_version: *mut libc::c_char,
+//     pub mobile_device_type: *mut libc::c_char,
+//     pub mobile_device_uniqueid: *mut libc::c_char,
+//     pub csd_token: *mut libc::c_char,
+//     pub csd_ticket: *mut libc::c_char,
+//     pub csd_stuburl: *mut libc::c_char,
+//     pub csd_starturl: *mut libc::c_char,
+//     pub csd_waiturl: *mut libc::c_char,
+//     pub csd_preurl: *mut libc::c_char,
+//     pub csd_scriptname: *mut libc::c_char,
+//     pub opaque_srvdata: *mut xmlNode,
+//     pub profile_url: *mut libc::c_char,
+//     pub profile_sha1: *mut libc::c_char,
+//     pub proxy_factory: *mut pxProxyFactory,
+//     pub proxy_type: *mut libc::c_char,
+//     pub proxy: *mut libc::c_char,
+//     pub proxy_port: libc::c_int,
+//     pub proxy_fd: libc::c_int,
+//     pub proxy_user: *mut libc::c_char,
+//     pub proxy_pass: *mut libc::c_char,
+//     pub proxy_close_during_auth: libc::c_int,
+//     pub retry_on_auth_fail: libc::c_int,
+//     pub try_http_auth: libc::c_int,
+//     pub http_auth: [http_auth_state; 4],
+//     pub proxy_auth: [http_auth_state; 4],
+//     pub localname: *mut libc::c_char,
+//     pub hostname: *mut libc::c_char,
+//     pub unique_hostname: *mut libc::c_char,
+//     pub port: libc::c_int,
+//     pub urlpath: *mut libc::c_char,
+//     pub cert_expire_warning: libc::c_int,
+//     pub cert: *mut libc::c_char,
+//     pub sslkey: *mut libc::c_char,
+//     pub cert_password: *mut libc::c_char,
+//     pub cafile: *mut libc::c_char,
+//     pub no_system_trust: libc::c_uint,
+//     pub xmlconfig: *const libc::c_char,
+//     pub xmlsha1: [libc::c_char; 41],
+//     pub authgroup: *mut libc::c_char,
+//     pub nopasswd: libc::c_int,
+//     pub xmlpost: libc::c_int,
+//     pub dtls_ciphers: *mut libc::c_char,
+//     pub dtls12_ciphers: *mut libc::c_char,
+//     pub csd_wrapper: *mut libc::c_char,
+//     pub no_http_keepalive: libc::c_int,
+//     pub dump_http_traffic: libc::c_int,
+//     pub token_mode: libc::c_int,
+//     pub token_bypassed: libc::c_int,
+//     pub token_tries: libc::c_int,
+//     pub token_time: time_t,
+//     pub stoken_ctx: *mut stoken_ctx,
+//     pub stoken_pin: *mut libc::c_char,
+//     pub stoken_concat_pin: libc::c_int,
+//     pub stoken_interval: libc::c_int,
+//     pub oath_secret: *mut libc::c_char,
+//     pub oath_secret_len: size_t,
+//     pub oath_hmac_alg: C2RustUnnamed_12,
+//     pub hotp_secret_format: C2RustUnnamed_11,
+//     pub pcsc: *mut oc_pcsc_ctx,
+//     pub yubikey_pwhash: [libc::c_uchar; 16],
+//     pub lock_token: openconnect_lock_token_vfn,
+//     pub unlock_token: openconnect_unlock_token_vfn,
+//     pub tok_cbdata: *mut libc::c_void,
+//     pub peer_cert: *mut libc::c_void,
+//     pub peer_cert_sha1_raw: [uint8_t; 20],
+//     pub peer_cert_sha256_raw: [uint8_t; 32],
+//     pub peer_cert_hash: *mut libc::c_char,
+//     pub cert_list_handle: *mut libc::c_void,
+//     pub cert_list_size: libc::c_int,
+//     pub cookie: *mut libc::c_char,
+//     pub cookies: *mut oc_vpn_option,
+//     pub cstp_options: *mut oc_vpn_option,
+//     pub dtls_options: *mut oc_vpn_option,
+//     pub script_env: *mut oc_vpn_option,
+//     pub csd_env: *mut oc_vpn_option,
+//     pub pfs: libc::c_uint,
+//     pub no_tls13: libc::c_uint,
+//     pub cert_x509: *mut X509,
+//     pub https_ctx: *mut SSL_CTX,
+//     pub https_ssl: *mut SSL,
+//     pub ttls_bio_meth: *mut BIO_METHOD,
+//     pub ttls_pushbuf: *mut oc_text_buf,
+//     pub ttls_eap_ident: uint8_t,
+//     pub ttls_recvbuf: *mut libc::c_uchar,
+//     pub ttls_recvpos: libc::c_int,
+//     pub ttls_recvlen: libc::c_int,
+//     pub pin_cache: *mut pin_cache,
+//     pub ssl_times: keepalive_info,
+//     pub owe_ssl_dpd_response: libc::c_int,
+//     pub deflate_pkt_size: libc::c_int,
+//     pub deflate_pkt: *mut pkt,
+//     pub pending_deflated_pkt: *mut pkt,
+//     pub current_ssl_pkt: *mut pkt,
+//     pub oncp_control_queue: pkt_q,
+//     pub oncp_rec_size: libc::c_int,
+//     pub cstp_pkt: *mut pkt,
+//     pub dtls_pkt: *mut pkt,
+//     pub tun_pkt: *mut pkt,
+//     pub pkt_trailer: libc::c_int,
+//     pub inflate_strm: z_stream,
+//     pub inflate_adler32: uint32_t,
+//     pub deflate_strm: z_stream,
+//     pub deflate_adler32: uint32_t,
+//     pub disable_ipv6: libc::c_int,
+//     pub reconnect_timeout: libc::c_int,
+//     pub reconnect_interval: libc::c_int,
+//     pub dtls_attempt_period: libc::c_int,
+//     pub new_dtls_started: time_t,
+//     pub dtls_ctx: *mut SSL_CTX,
+//     pub dtls_ssl: *mut SSL,
+//     pub cstp_cipher: *mut libc::c_char,
+//     pub dtls_state: libc::c_int,
+//     pub dtls_need_reconnect: libc::c_int,
+//     pub dtls_times: keepalive_info,
+//     pub dtls_session_id: [libc::c_uchar; 32],
+//     pub dtls_secret: [libc::c_uchar; 48],
+//     pub dtls_app_id: [libc::c_uchar; 32],
+//     pub dtls_app_id_size: libc::c_uint,
+//     pub ift_seq: uint32_t,
+//     pub cisco_dtls12: libc::c_int,
+//     pub dtls_cipher: *mut libc::c_char,
+//     pub vpnc_script: *mut libc::c_char,
+//     pub uid_csd_given: libc::c_int,
+//     pub uid_csd: uid_t,
+//     pub gid_csd: gid_t,
+//     pub uid: uid_t,
+//     pub gid: gid_t,
+//     pub use_tun_script: libc::c_int,
+//     pub script_tun: libc::c_int,
+//     pub ifname: *mut libc::c_char,
+//     pub cmd_ifname: *mut libc::c_char,
+//     pub reqmtu: libc::c_int,
+//     pub basemtu: libc::c_int,
+//     pub banner: *const libc::c_char,
+//     pub ip_info: oc_ip_info,
+//     pub cstp_basemtu: libc::c_int,
+//     pub idle_timeout: libc::c_int,
+//     pub _select_nfds: libc::c_int,
+//     pub _select_rfds: fd_set,
+//     pub _select_wfds: fd_set,
+//     pub _select_efds: fd_set,
+//     pub tun_fd: libc::c_int,
+//     pub ssl_fd: libc::c_int,
+//     pub dtls_fd: libc::c_int,
+//     pub dtls_tos_current: libc::c_int,
+//     pub dtls_pass_tos: libc::c_int,
+//     pub dtls_tos_proto: libc::c_int,
+//     pub dtls_tos_optname: libc::c_int,
+//     pub cmd_fd: libc::c_int,
+//     pub cmd_fd_write: libc::c_int,
+//     pub got_cancel_cmd: libc::c_int,
+//     pub got_pause_cmd: libc::c_int,
+//     pub cancel_type: libc::c_char,
+//     pub incoming_queue: pkt_q,
+//     pub outgoing_queue: pkt_q,
+//     pub max_qlen: libc::c_int,
+//     pub stats: oc_stats,
+//     pub stats_handler: openconnect_stats_vfn,
+//     pub peer_addrlen: socklen_t,
+//     pub peer_addr: *mut sockaddr,
+//     pub dtls_addr: *mut sockaddr,
+//     pub dtls_local_port: libc::c_int,
+//     pub req_compr: libc::c_int,
+//     pub cstp_compr: libc::c_int,
+//     pub dtls_compr: libc::c_int,
+//     pub is_dyndns: libc::c_int,
+//     pub useragent: *mut libc::c_char,
+//     pub version_string: *mut libc::c_char,
+//     pub quit_reason: *const libc::c_char,
+//     pub verbose: libc::c_int,
+//     pub cbdata: *mut libc::c_void,
+//     pub validate_peer_cert: openconnect_validate_peer_cert_vfn,
+//     pub write_new_config: openconnect_write_new_config_vfn,
+//     pub process_auth_form: openconnect_process_auth_form_vfn,
+//     pub progress: openconnect_progress_vfn,
+//     pub protect_socket: openconnect_protect_socket_vfn,
+//     pub getaddrinfo_override: openconnect_getaddrinfo_vfn,
+//     pub setup_tun: openconnect_setup_tun_vfn,
+//     pub reconnected: openconnect_reconnected_vfn,
+//     pub ssl_read: Option<unsafe extern "C" fn(_: *mut openconnect_info,
+//                                               _: *mut libc::c_char, _: size_t)
+//                              -> libc::c_int>,
+//     pub ssl_gets: Option<unsafe extern "C" fn(_: *mut openconnect_info,
+//                                               _: *mut libc::c_char, _: size_t)
+//                              -> libc::c_int>,
+//     pub ssl_write: Option<unsafe extern "C" fn(_: *mut openconnect_info,
+//                                                _: *mut libc::c_char,
+//                                                _: size_t) -> libc::c_int>,
+//     /* All strings are UTF-8. If operating in a legacy environment where
+//    nl_langinfo(CODESET) returns anything other than UTF-8, or on Windows,
+//    the library will take appropriate steps to convert back to the legacy
+//    character set (or UTF-16) for file handling and wherever else it is
+//    appropriate to do so. Library functions may (but probably don't yet)
+//    return -EILSEQ if passed invalid UTF-8 strings. */
+//     /* Unlike previous versions of openconnect, no functions will take ownership
+//    of the provided strings. */
+//     /* Provide environment variables to be set in the CSD trojan environment
+//    before spawning it. Some callers may need to set $TMPDIR, $PATH and
+//    other such things if not running from a standard UNIX-like environment.
+//    To ensure that a variable is unset, pass its name with value==NULL.
+//    To clear all settings and allow the CSD trojan to inherit an unmodified
+//    environment, call with name==NULL. */
+// }
 /* This string is static, valid only while the connection lasts. If you
  * are going to cache this to remember which certs the user has accepted,
  * make sure you also store the host/port for which it was accepted and
