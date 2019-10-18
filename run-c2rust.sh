@@ -21,4 +21,5 @@ cd $cd
     -- \
     -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include \
     -I /Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include \
-    -fno-blocks
+    -fno-blocks \
+    -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
