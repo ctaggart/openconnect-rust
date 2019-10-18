@@ -13,10 +13,12 @@ intercept-build --override-compiler ../openconnect-rust/build-openconnect-osx.sh
 
 cd $cd
 # # macOS Catalina 10.15 has that clang version
-../c2rust/target/release/c2rust transpile -o $PWD ../openconnect/compile_commands.json -- \
+../c2rust/target/release/c2rust transpile \
+    -o $PWD \
+    --overwrite-existing \
+    --reorganize-definitions \
+    ../openconnect/compile_commands.json \
+    -- \
     -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include \
-    -I /Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include
-
-# why are the files being sent to $PWD/openconnect-rust/src ? bug ?
-mv openconnect-rust/src src
-rm -rf openconnect-rust
+    -I /Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include \
+    -fno-blocks

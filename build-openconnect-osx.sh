@@ -22,7 +22,7 @@
 export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
 export PATH="/usr/local/opt/gettext/bin:$PATH"
 export LDFLAGS="-L/usr/local/opt/gettext/lib"
-export CFLAGS="-I/usr/local/opt/gettext/include -I/usr/local/opt/libxml2/include/libxml2"
+export CFLAGS="-I/usr/local/opt/gettext/include -I/usr/local/opt/libxml2/include/libxml2 -w"
 
 ./autogen.sh
 
