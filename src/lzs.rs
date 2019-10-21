@@ -1,15 +1,11 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case,
          non_upper_case_globals, unused_assignments, unused_mut)]
+#![feature(custom_attribute)]
 extern crate libc;
-extern "C" {
-    #[no_mangle]
-    fn memcmp(_: *const libc::c_void, _: *const libc::c_void,
-              _: libc::c_ulong) -> libc::c_int;
-    #[no_mangle]
-    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
-     -> *mut libc::c_void;
-}
-/*
+#[header_src =
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_types/_uint16_t.h:22"]
+pub mod _uint16_t_h {
+    /*
  * Copyright (c) 2012 Apple Inc. All rights reserved.
  *
  * @APPLE_OSREFERENCE_LICENSE_HEADER_START@
@@ -36,8 +32,15 @@ extern "C" {
  * 
  * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
  */
-pub type uint16_t = libc::c_ushort;
-/*
+    #[src_loc = "31:1"]
+    pub type uint16_t = libc::c_ushort;
+    use super::libc;
+    /* _UINT16_T */
+}
+#[header_src =
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_types/_uint32_t.h:22"]
+pub mod _uint32_t_h {
+    /*
  * Copyright (c) 2012 Apple Inc. All rights reserved.
  *
  * @APPLE_OSREFERENCE_LICENSE_HEADER_START@
@@ -64,12 +67,50 @@ pub type uint16_t = libc::c_ushort;
  * 
  * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
  */
-pub type uint32_t = libc::c_uint;
-#[derive ( Copy, Clone )]
-#[repr(C, packed)]
-pub struct oc_packed_uint16_t {
-    pub d: uint16_t,
+    #[src_loc = "31:1"]
+    pub type uint32_t = libc::c_uint;
+    use super::libc;
+    /* _UINT32_T */
 }
+#[header_src = "/Users/cameron/github/openconnect/openconnect-internal.h:24"]
+pub mod openconnect_internal_h {
+    #[derive ( Copy, Clone )]
+    #[repr(C, packed)]
+    #[src_loc = "1189:1"]
+    pub struct oc_packed_uint16_t {
+        pub d: uint16_t,
+    }
+    use super::_uint16_t_h::uint16_t;
+    /* __OPENCONNECT_INTERNAL_H__ */
+    /* !Not known to be little-endian */
+}
+#[header_src =
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/string.h:21"]
+pub mod string_h {
+    use super::libc;
+    extern "C" {
+        #[no_mangle]
+        #[src_loc = "71:6"]
+        pub fn memcmp(_: *const libc::c_void, _: *const libc::c_void,
+                      _: libc::c_ulong) -> libc::c_int;
+        #[no_mangle]
+        #[src_loc = "74:7"]
+        pub fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong)
+         -> *mut libc::c_void;
+    }
+    /* _STRING_H_ */
+    /* _USE_EXTENDED_LOCALES_ */
+    /* __DARWIN_C_LEVEL >= __DARWIN_C_FULL */
+    /* Some functions historically defined in string.h were placed in strings.h
+ * by SUS.  We are using "strings.h" instead of <strings.h> to avoid an issue
+ * where /Developer/Headers/FlatCarbon/Strings.h could be included instead on
+ * case-insensitive file systems.
+ */
+}
+pub use self::_uint16_t_h::uint16_t;
+pub use self::_uint32_t_h::uint32_t;
+pub use self::openconnect_internal_h::oc_packed_uint16_t;
+use self::string_h::{memcmp, memset};
 /*
  * OpenConnect (SSL + DTLS) VPN client
  *
@@ -107,6 +148,7 @@ pub struct oc_packed_uint16_t {
 			 * bits_left == 0. */
 /* We need fewer bits than are left in the current byte */
 #[no_mangle]
+#[src_loc = "69:1"]
 pub unsafe extern "C" fn lzs_decompress(mut dst: *mut libc::c_uchar,
                                         mut dstlen: libc::c_int,
                                         mut src: *const libc::c_uchar,
@@ -368,6 +410,7 @@ pub unsafe extern "C" fn lzs_decompress(mut dst: *mut libc::c_uchar,
  * from isdn_lzscomp.c by Andre Beck: http://micky.ibh.de/~beck/stuff/lzs4i4l/
  */
 #[no_mangle]
+#[src_loc = "166:1"]
 pub unsafe extern "C" fn lzs_compress(mut dst: *mut libc::c_uchar,
                                       mut dstlen: libc::c_int,
                                       mut src: *const libc::c_uchar,
