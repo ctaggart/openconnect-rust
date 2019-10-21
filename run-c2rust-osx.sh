@@ -4,16 +4,8 @@
 # git clone git@github.com:immunant/c2rust.git ../c2rust
 # cd ../c2rust; cargo build --release
 
-# Make sure to install scan-build which provides the intercept-build executable.
-# pip3 install scan-build
-
-cd=$PWD
-cd ../openconnect
-intercept-build --override-compiler ../openconnect-rust/build-openconnect-osx.sh
-
-cd $cd
 # # macOS Catalina 10.15 has that clang version
-../c2rust/target/release/c2rust transpile \
+RUST_BACKTRACE=1 ../c2rust/target/release/c2rust transpile \
     -o $PWD \
     --overwrite-existing \
     --reorganize-definitions \
