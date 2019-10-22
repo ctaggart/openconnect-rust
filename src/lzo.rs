@@ -1,13 +1,46 @@
 #![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case,
          non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(ptr_wrapping_offset_from)]
+#![feature(custom_attribute, ptr_wrapping_offset_from)]
 extern crate libc;
-extern "C" {
-    #[no_mangle]
-    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong)
-     -> *mut libc::c_void;
+#[header_src =
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_types/_uint8_t.h:28"]
+pub mod _uint8_t_h {
+    /*
+ * Copyright (c) 2012 Apple Inc. All rights reserved.
+ *
+ * @APPLE_OSREFERENCE_LICENSE_HEADER_START@
+ * 
+ * This file contains Original Code and/or Modifications of Original Code
+ * as defined in and that are subject to the Apple Public Source License
+ * Version 2.0 (the 'License'). You may not use this file except in
+ * compliance with the License. The rights granted to you under the License
+ * may not be used to create, or enable the creation or redistribution of,
+ * unlawful or unlicensed copies of an Apple operating system, or to
+ * circumvent, violate, or enable the circumvention or violation of, any
+ * terms of an Apple operating system software license agreement.
+ * 
+ * Please obtain a copy of the License at
+ * http://www.opensource.apple.com/apsl/ and read it before using this file.
+ * 
+ * The Original Code and all software distributed under the License are
+ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
+ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
+ * Please see the License for the specific language governing rights and
+ * limitations under the License.
+ * 
+ * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
+ */
+    #[src_loc = "31:1"]
+    pub type uint8_t = libc::c_uchar;
+    use super::libc;
+    /* _UINT8_T */
 }
-/*
+#[header_src =
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_types/_uint32_t.h:28"]
+pub mod _uint32_t_h {
+    /*
  * Copyright (c) 2012 Apple Inc. All rights reserved.
  *
  * @APPLE_OSREFERENCE_LICENSE_HEADER_START@
@@ -34,37 +67,65 @@ extern "C" {
  * 
  * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
  */
-pub type uint8_t = libc::c_uchar;
-/*
- * Copyright (c) 2012 Apple Inc. All rights reserved.
- *
- * @APPLE_OSREFERENCE_LICENSE_HEADER_START@
- * 
- * This file contains Original Code and/or Modifications of Original Code
- * as defined in and that are subject to the Apple Public Source License
- * Version 2.0 (the 'License'). You may not use this file except in
- * compliance with the License. The rights granted to you under the License
- * may not be used to create, or enable the creation or redistribution of,
- * unlawful or unlicensed copies of an Apple operating system, or to
- * circumvent, violate, or enable the circumvention or violation of, any
- * terms of an Apple operating system software license agreement.
- * 
- * Please obtain a copy of the License at
- * http://www.opensource.apple.com/apsl/ and read it before using this file.
- * 
- * The Original Code and all software distributed under the License are
- * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
- * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
- * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
- * Please see the License for the specific language governing rights and
- * limitations under the License.
- * 
- * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
+    #[src_loc = "31:1"]
+    pub type uint32_t = libc::c_uint;
+    use super::libc;
+    /* _UINT32_T */
+}
+#[header_src = "/Users/cameron/github/openconnect/lzo.h:28"]
+pub mod lzo_h {
+    /* *
+ * @}
  */
-pub type uint32_t = libc::c_uint;
+    #[derive ( Copy, Clone )]
+    #[repr(C, packed)]
+    #[src_loc = "69:1"]
+    pub struct lzo_packed_uint32 {
+        pub d: uint32_t,
+    }
+    #[inline]
+    #[src_loc = "78:1"]
+    pub unsafe extern "C" fn av_memcpy_backptr(mut dst: *mut libc::c_uchar,
+                                               mut back: libc::c_int,
+                                               mut cnt: libc::c_int) {
+        loop  {
+            let fresh0 = cnt;
+            cnt = cnt - 1;
+            if !(fresh0 != 0) { break ; }
+            *dst = *dst.offset(-(back as isize));
+            dst = dst.offset(1)
+        };
+    }
+    use super::_uint32_t_h::uint32_t;
+    use super::libc;
+    /* AVUTIL_LZO_H */
+}
+#[header_src =
+  "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/string.h:22"]
+pub mod string_h {
+    use super::libc;
+    extern "C" {
+        #[no_mangle]
+        #[src_loc = "72:7"]
+        pub fn memcpy(_: *mut libc::c_void, _: *const libc::c_void,
+                      _: libc::c_ulong) -> *mut libc::c_void;
+    }
+    /* _STRING_H_ */
+    /* _USE_EXTENDED_LOCALES_ */
+    /* __DARWIN_C_LEVEL >= __DARWIN_C_FULL */
+    /* Some functions historically defined in string.h were placed in strings.h
+ * by SUS.  We are using "strings.h" instead of <strings.h> to avoid an issue
+ * where /Developer/Headers/FlatCarbon/Strings.h could be included instead on
+ * case-insensitive file systems.
+ */
+}
+pub use self::_uint8_t_h::uint8_t;
+pub use self::_uint32_t_h::uint32_t;
+pub use self::lzo_h::{lzo_packed_uint32, av_memcpy_backptr};
+use self::string_h::memcpy;
 #[derive ( Copy, Clone )]
 #[repr(C)]
+#[src_loc = "35:9"]
 pub struct LZOContext {
     pub in_0: *const uint8_t,
     pub in_end: *const uint8_t,
@@ -74,30 +135,11 @@ pub struct LZOContext {
     pub error: libc::c_int,
 }
 /* *
- * @}
- */
-#[derive ( Copy, Clone )]
-#[repr(C, packed)]
-pub struct lzo_packed_uint32 {
-    pub d: uint32_t,
-}
-#[inline]
-unsafe extern "C" fn av_memcpy_backptr(mut dst: *mut libc::c_uchar,
-                                       mut back: libc::c_int,
-                                       mut cnt: libc::c_int) {
-    loop  {
-        let fresh0 = cnt;
-        cnt = cnt - 1;
-        if !(fresh0 != 0) { break ; }
-        *dst = *dst.offset(-(back as isize));
-        dst = dst.offset(1)
-    };
-}
-/* *
  * @brief Reads one byte from the input buffer, avoiding an overrun.
  * @return byte read
  */
 #[inline]
+#[src_loc = "45:1"]
 unsafe extern "C" fn get_byte(mut c: *mut LZOContext) -> libc::c_int {
     if (*c).in_0 < (*c).in_end {
         let fresh1 = (*c).in_0;
@@ -114,6 +156,7 @@ unsafe extern "C" fn get_byte(mut c: *mut LZOContext) -> libc::c_int {
  * @return decoded length value
  */
 #[inline]
+#[src_loc = "65:1"]
 unsafe extern "C" fn get_len(mut c: *mut LZOContext, mut x: libc::c_int,
                              mut mask: libc::c_int) -> libc::c_int {
     let mut cnt: libc::c_int = x & mask;
@@ -135,6 +178,7 @@ unsafe extern "C" fn get_len(mut c: *mut LZOContext, mut x: libc::c_int,
  * @param cnt number of bytes to copy, must be >= 0
  */
 #[inline]
+#[src_loc = "85:1"]
 unsafe extern "C" fn copy(mut c: *mut LZOContext, mut cnt: libc::c_int) {
     let mut src: *const uint8_t = (*c).in_0;
     let mut dst: *mut uint8_t = (*c).out;
@@ -183,6 +227,7 @@ unsafe extern "C" fn copy(mut c: *mut LZOContext, mut cnt: libc::c_int) {
  * thus creating a repeating pattern with a period length of back.
  */
 #[inline]
+#[src_loc = "122:1"]
 unsafe extern "C" fn copy_backptr(mut c: *mut LZOContext,
                                   mut back: libc::c_int,
                                   mut cnt: libc::c_int) {
@@ -252,6 +297,7 @@ unsafe extern "C" fn copy_backptr(mut c: *mut LZOContext,
  * AV_LZO_INPUT_PADDING, out must provide AV_LZO_OUTPUT_PADDING additional bytes.
  */
 #[no_mangle]
+#[src_loc = "141:1"]
 pub unsafe extern "C" fn av_lzo1x_decode(mut out: *mut libc::c_void,
                                          mut outlen: *mut libc::c_int,
                                          mut in_0: *const libc::c_void,
