@@ -8,6 +8,7 @@
 RUST_BACKTRACE=1 ../c2rust/target/release/c2rust transpile \
     -o $PWD \
     --overwrite-existing \
+    --emit-build-files \
     --reorganize-definitions \
     ../openconnect/compile_commands.json \
     -- \

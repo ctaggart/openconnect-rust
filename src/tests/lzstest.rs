@@ -1,7 +1,4 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case,
-         non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(const_raw_ptr_to_usize_cast, custom_attribute, extern_types, main)]
-extern crate libc;
+use libc;
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_types/_uint16_t.h:27"]
 pub mod _uint16_t_h {
@@ -34,7 +31,6 @@ pub mod _uint16_t_h {
  */
     #[src_loc = "31:1"]
     pub type uint16_t = libc::c_ushort;
-    use super::libc;
     /* _UINT16_T */
 }
 #[header_src =
@@ -69,7 +65,6 @@ pub mod _uint32_t_h {
  */
     #[src_loc = "31:1"]
     pub type uint32_t = libc::c_uint;
-    use super::libc;
     /* _UINT32_T */
 }
 #[header_src =
@@ -77,7 +72,6 @@ pub mod _uint32_t_h {
 pub mod _types_h {
     #[src_loc = "46:1"]
     pub type __int64_t = libc::c_longlong;
-    use super::libc;
     /* _BSD_I386__TYPES_H_ */
     /* time() */
 }
@@ -239,7 +233,6 @@ pub mod _stdio_h {
     #[src_loc = "126:1"]
     pub type FILE = __sFILE;
     use super::sys__types_h::__darwin_off_t;
-    use super::libc;
     extern "C" {
         #[src_loc = "98:1"]
         pub type __sFILEX;
@@ -270,7 +263,6 @@ pub mod _stdio_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/string.h:27"]
 pub mod string_h {
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "71:6"]
@@ -998,16 +990,15 @@ pub mod lzs_c {
         }
         return outpos;
     }
-    use super::{libc, oc_packed_uint16_t};
     use super::_uint32_t_h::uint32_t;
     use super::_uint16_t_h::uint16_t;
     use super::string_h::{memset, memcmp};
+    use super::oc_packed_uint16_t;
 }
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:29"]
 pub mod stdio_h {
     use super::_stdio_h::FILE;
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "69:14"]
@@ -1025,7 +1016,6 @@ pub mod stdio_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdlib.h:30"]
 pub mod stdlib_h {
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "145:7"]
