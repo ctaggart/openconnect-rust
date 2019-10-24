@@ -1,8 +1,4 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case,
-         non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(c_variadic, const_raw_ptr_to_usize_cast, custom_attribute,
-           extern_types, main)]
-extern crate libc;
+use libc;
 #[header_src = "internal:0"]
 pub mod internal {
     #[src_loc = "0:0"]
@@ -16,7 +12,6 @@ pub mod internal {
         pub overflow_arg_area: *mut libc::c_void,
         pub reg_save_area: *mut libc::c_void,
     }
-    use super::libc;
 }
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/i386/_types.h:18"]
@@ -25,7 +20,6 @@ pub mod _types_h {
     pub type __int64_t = libc::c_longlong;
     #[src_loc = "98:1"]
     pub type __darwin_va_list = __builtin_va_list;
-    use super::libc;
     use super::internal::__builtin_va_list;
     /* _BSD_I386__TYPES_H_ */
     /* time() */
@@ -245,7 +239,6 @@ pub mod _stdio_h {
     #[src_loc = "126:1"]
     pub type FILE = __sFILE;
     use super::sys__types_h::__darwin_off_t;
-    use super::libc;
     extern "C" {
         /* current position in (some) buffer */
         /* read space left for getc() */
@@ -341,7 +334,6 @@ pub mod openconnect_h {
         =
         Option<unsafe extern "C" fn(_: *mut libc::c_void, _: libc::c_int,
                                     _: *const libc::c_char, _: ...) -> ()>;
-    use super::libc;
     extern "C" {
         #[src_loc = "340:1"]
         pub type openconnect_info;
@@ -380,7 +372,6 @@ pub mod openconnect_h {
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:18"]
 pub mod stdio_h {
     use super::_stdio_h::FILE;
-    use super::libc;
     use super::internal::__va_list_tag;
     extern "C" {
         #[no_mangle]
@@ -406,7 +397,6 @@ pub mod stdio_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdlib.h:19"]
 pub mod stdlib_h {
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "145:7"]

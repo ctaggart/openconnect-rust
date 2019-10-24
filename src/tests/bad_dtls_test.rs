@@ -1,7 +1,4 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case,
-         non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(const_raw_ptr_to_usize_cast, custom_attribute, extern_types, main)]
-extern crate libc;
+use libc;
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/i386/_types.h:38"]
 pub mod _types_h {
@@ -47,7 +44,6 @@ pub mod _types_h {
     /* byte count or error */
     #[src_loc = "120:1"]
     pub type __darwin_time_t = libc::c_long;
-    use super::libc;
     /* _BSD_I386__TYPES_H_ */
     /* time() */
 }
@@ -247,7 +243,6 @@ pub mod _stdio_h {
     #[src_loc = "126:1"]
     pub type FILE = __sFILE;
     use super::sys__types_h::__darwin_off_t;
-    use super::libc;
     extern "C" {
         #[src_loc = "98:1"]
         pub type __sFILEX;
@@ -392,7 +387,6 @@ pub mod stack_h {
     }
     #[src_loc = "66:1"]
     pub type _STACK = stack_st;
-    use super::libc;
 }
 #[header_src =
   "/usr/local/Cellar/openssl/1.0.2t/include/openssl/ossl_typ.h:40"]
@@ -1505,7 +1499,6 @@ pub mod ossl_typ_h {
         pub ctrl: Option<unsafe extern "C" fn() -> libc::c_long>,
         pub callback_ctrl: Option<unsafe extern "C" fn() -> libc::c_long>,
     }
-    use super::libc;
     use super::bn_h::C2RustUnnamed;
     use super::_size_t_h::size_t;
     use super::asn1_h::ASN1_TYPE;
@@ -1569,7 +1562,6 @@ pub mod bn_h {
                                               _: *mut BN_GENCB)
                              -> libc::c_int>,
     }
-    use super::libc;
     use super::ossl_typ_h::BN_GENCB;
     /* Reason codes. */
     /* Function codes. */
@@ -1636,7 +1628,6 @@ pub mod asn1_h {
         pub len: libc::c_long,
         pub modified: libc::c_int,
     }
-    use super::libc;
     use super::ossl_typ_h::{ASN1_BOOLEAN, ASN1_STRING, ASN1_OBJECT,
                             ASN1_INTEGER, ASN1_ENUMERATED, ASN1_BIT_STRING,
                             ASN1_OCTET_STRING, ASN1_PRINTABLESTRING,
@@ -1673,7 +1664,6 @@ pub mod evp_h {
         pub ec: *mut ec_key_st,
     }
     use super::stack_h::_STACK;
-    use super::libc;
     use super::ossl_typ_h::{rsa_st, dsa_st, dh_st, EVP_MD, EVP_MD_CTX,
                             EVP_CIPHER_CTX, ENGINE, EVP_CIPHER};
     use super::_size_t_h::size_t;
@@ -1946,7 +1936,6 @@ pub mod crypto_h {
     }
     use super::stack_h::_STACK;
     use super::bio_h::BIO_METHOD;
-    use super::libc;
     use super::ossl_typ_h::CRYPTO_EX_DATA;
     use super::_size_t_h::size_t;
     extern "C" {
@@ -2134,7 +2123,6 @@ pub mod x509_vfy_h {
     pub struct stack_st_X509_OBJECT {
         pub stack: _STACK,
     }
-    use super::libc;
     use super::_time_t_h::time_t;
     use super::asn1_h::stack_st_ASN1_OBJECT;
     use super::stack_h::_STACK;
@@ -2671,7 +2659,6 @@ pub mod ssl_h {
         pub write_sequence: libc::c_ulong,
         pub tmp: C2RustUnnamed_4,
     }
-    use super::libc;
     use super::ossl_typ_h::{SSL, BIGNUM, X509, CRYPTO_EX_DATA, SSL_CTX,
                             EVP_MD_CTX, COMP_METHOD};
     use super::stack_h::_STACK;
@@ -2833,7 +2820,6 @@ pub mod hmac_h {
         pub key: [libc::c_uchar; 128],
     }
     use super::ossl_typ_h::{EVP_MD, EVP_MD_CTX, ENGINE};
-    use super::libc;
     use super::_size_t_h::size_t;
     extern "C" {
         #[no_mangle]
@@ -2959,7 +2945,6 @@ pub mod pem_h {
         unsafe extern "C" fn(_: *mut libc::c_char, _: libc::c_int,
                              _: libc::c_int, _: *mut libc::c_void)
             -> libc::c_int;
-    use super::libc;
     /* Reason codes. */
     /* Function codes. */
     /* Error codes for the PEM functions. */
@@ -2980,7 +2965,6 @@ pub mod comp_h {
         pub ex_data: CRYPTO_EX_DATA,
     }
     use super::ossl_typ_h::{COMP_METHOD, CRYPTO_EX_DATA};
-    use super::libc;
     /* Reason codes. */
     /* Function codes. */
     /* Error codes for the COMP functions. */
@@ -3103,7 +3087,6 @@ pub mod dtls1_h {
         pub map: libc::c_ulong,
         pub max_seq_num: [libc::c_uchar; 8],
     }
-    use super::libc;
     use super::ossl_typ_h::{EVP_CIPHER_CTX, EVP_MD_CTX};
     use super::comp_h::COMP_CTX;
     use super::ssl_h::SSL_SESSION;
@@ -3402,7 +3385,6 @@ pub mod ssl3_h {
         pub offset: libc::c_int,
         pub left: libc::c_int,
     }
-    use super::libc;
     use super::ssl_h::{SSL_CIPHER, SSL_COMP};
     use super::ossl_typ_h::{DH, EVP_CIPHER, EVP_MD};
     use super::ec_h::EC_KEY;
@@ -3509,7 +3491,6 @@ pub mod bio_h {
                              _: *const libc::c_char, _: libc::c_int,
                              _: libc::c_long, _: libc::c_long) -> ();
     use super::crypto_h::bio_st;
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "691:1"]
@@ -3548,7 +3529,6 @@ pub mod ssl2_h {
         pub clen: libc::c_uint,
         pub rlen: libc::c_uint,
     }
-    use super::libc;
     /* server */
     /* SSLv2 */
 /* client */
@@ -3556,7 +3536,6 @@ pub mod ssl2_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/string.h:38"]
 pub mod string_h {
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "72:7"]
@@ -3575,7 +3554,6 @@ pub mod string_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/malloc/_malloc.h:40"]
 pub mod _malloc_h {
-    use super::libc;
     extern "C" {
         /*
  * Copyright (c) 2018 Apple Computer, Inc. All rights reserved.
@@ -3616,7 +3594,6 @@ pub mod _malloc_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:40"]
 pub mod stdio_h {
-    use super::libc;
     use super::_stdio_h::FILE;
     extern "C" {
         #[no_mangle]
@@ -3645,7 +3622,6 @@ pub mod time_h {
 #[header_src = "/usr/local/Cellar/openssl/1.0.2t/include/openssl/err.h:44"]
 pub mod err_h {
     use super::_stdio_h::FILE;
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "344:1"]
@@ -3657,7 +3633,6 @@ pub mod err_h {
 }
 #[header_src = "/usr/local/Cellar/openssl/1.0.2t/include/openssl/rand.h:45"]
 pub mod rand_h {
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "101:1"]

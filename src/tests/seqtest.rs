@@ -1,7 +1,4 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case,
-         non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(custom_attribute, main)]
-extern crate libc;
+use libc;
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_types/_uint32_t.h:20"]
 pub mod _uint32_t_h {
@@ -34,7 +31,6 @@ pub mod _uint32_t_h {
  */
     #[src_loc = "31:1"]
     pub type uint32_t = libc::c_uint;
-    use super::libc;
     /* _UINT32_T */
 }
 #[header_src =
@@ -69,13 +65,11 @@ pub mod _uint64_t_h {
  */
     #[src_loc = "31:1"]
     pub type uint64_t = libc::c_ulonglong;
-    use super::libc;
     /* _UINT64_T */
 }
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:21"]
 pub mod stdio_h {
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "170:6"]
@@ -202,7 +196,7 @@ pub mod esp_seqno_c {
             }
         };
     }
-    use super::{openconnect_info, esp, libc};
+    use super::{openconnect_info, esp};
     use super::_uint32_t_h::uint32_t;
     use super::_uint64_t_h::uint64_t;
     use super::stdio_h::printf;

@@ -1,7 +1,4 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case,
-         non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(c_variadic, custom_attribute, extern_types)]
-extern crate libc;
+use libc;
 #[header_src = "internal:0"]
 pub mod internal {
     #[src_loc = "0:0"]
@@ -15,7 +12,6 @@ pub mod internal {
         pub overflow_arg_area: *mut libc::c_void,
         pub reg_save_area: *mut libc::c_void,
     }
-    use super::libc;
 }
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/i386/_types.h:20"]
@@ -46,7 +42,6 @@ pub mod _types_h {
     /* byte count or error */
     #[src_loc = "120:1"]
     pub type __darwin_time_t = libc::c_long;
-    use super::libc;
     use super::internal::__builtin_va_list;
     /* _BSD_I386__TYPES_H_ */
     /* time() */
@@ -83,7 +78,6 @@ pub mod _int32_t_h {
  */
     #[src_loc = "30:1"]
     pub type int32_t = libc::c_int;
-    use super::libc;
     /* _INT32_T */
 }
 #[header_src =
@@ -118,7 +112,6 @@ pub mod _u_int32_t_h {
  */
     #[src_loc = "30:1"]
     pub type u_int32_t = libc::c_uint;
-    use super::libc;
     /* _U_INT32_T */
 }
 #[header_src =
@@ -425,7 +418,6 @@ pub mod _fd_def_h {
                        as __int32_t;
     }
     use super::_types_h::__int32_t;
-    use super::libc;
     /* _FD_SET */
     /*
  * Use the built-in bzero function instead of the library version so that
@@ -464,7 +456,6 @@ pub mod _uint64_t_h {
  */
     #[src_loc = "31:1"]
     pub type uint64_t = libc::c_ulonglong;
-    use super::libc;
     /* _UINT64_T */
 }
 #[header_src =
@@ -499,7 +490,6 @@ pub mod _uint32_t_h {
  */
     #[src_loc = "31:1"]
     pub type uint32_t = libc::c_uint;
-    use super::libc;
     /* _UINT32_T */
 }
 #[header_src =
@@ -752,7 +742,6 @@ pub mod _stdio_h {
     #[src_loc = "126:1"]
     pub type FILE = __sFILE;
     use super::sys__types_h::__darwin_off_t;
-    use super::libc;
     extern "C" {
         /* current position in (some) buffer */
         /* read space left for getc() */
@@ -813,7 +802,6 @@ pub mod _uint8_t_h {
  */
     #[src_loc = "31:1"]
     pub type uint8_t = libc::c_uchar;
-    use super::libc;
     /* _UINT8_T */
 }
 #[header_src =
@@ -890,7 +878,6 @@ pub mod mount_h {
     use super::_uint64_t_h::uint64_t;
     use super::_fsid_t_h::fsid_t;
     use super::_uid_t_h::uid_t;
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "415:1"]
@@ -1234,7 +1221,6 @@ pub mod socket_h {
     }
     use super::_types_h::{__uint8_t, __int64_t};
     use super::_sa_family_t_h::sa_family_t;
-    use super::libc;
     use super::_socklen_t_h::socklen_t;
     use super::_size_t_h::size_t;
     use super::_ssize_t_h::ssize_t;
@@ -1295,7 +1281,6 @@ pub mod in_h {
     use super::_types_h::__uint8_t;
     use super::_sa_family_t_h::sa_family_t;
     use super::_in_port_t_h::in_port_t;
-    use super::libc;
     /* _NETINET_IN_H_ */
 }
 #[header_src =
@@ -1489,7 +1474,6 @@ pub mod netdb_h {
         pub ai_next: *mut addrinfo,
         /* next structure in linked list */
     }
-    use super::libc;
     use super::_socklen_t_h::socklen_t;
     use super::socket_h::sockaddr;
     extern "C" {
@@ -2046,7 +2030,6 @@ pub mod openconnect_h {
     pub type openconnect_lock_token_vfn
         =
         Option<unsafe extern "C" fn(_: *mut libc::c_void) -> libc::c_int>;
-    use super::libc;
     use super::_uint64_t_h::uint64_t;
     use super::openconnect_internal_h::{vpn_proto, esp, http_auth_state,
                                         C2RustUnnamed_13, C2RustUnnamed_12,
@@ -2291,7 +2274,6 @@ pub mod openconnect_internal_h {
      -> libc::c_int {
         return fcntl(fd, 4i32, fcntl(fd, 3i32) | 0x4i32);
     }
-    use super::libc;
     use super::_uint32_t_h::uint32_t;
     use super::_time_t_h::time_t;
     use super::gssapi_h::{gss_name_t, gss_ctx_id_t};
@@ -3547,7 +3529,6 @@ pub mod ossl_typ_h {
         pub ctrl: Option<unsafe extern "C" fn() -> libc::c_long>,
         pub callback_ctrl: Option<unsafe extern "C" fn() -> libc::c_long>,
     }
-    use super::libc;
     use super::ssl_h::{SSL_METHOD, ssl2_state_st, ssl3_state_st,
                        dtls1_state_st, stack_st_SSL_CIPHER, cert_st,
                        SSL_SESSION, GEN_SESSION_CB, stack_st_OCSP_RESPID,
@@ -4100,7 +4081,6 @@ pub mod ssl_h {
         pub write_sequence: libc::c_ulong,
         pub tmp: C2RustUnnamed_11,
     }
-    use super::libc;
     use super::ossl_typ_h::{SSL, BIGNUM, X509, CRYPTO_EX_DATA, SSL_CTX,
                             EVP_MD_CTX, COMP_METHOD};
     use super::stack_h::_STACK;
@@ -4201,7 +4181,6 @@ pub mod stack_h {
                                               _: *const libc::c_void)
                              -> libc::c_int>,
     }
-    use super::libc;
 }
 #[header_src = "/usr/local/Cellar/openssl/1.0.2t/include/openssl/hmac.h:41"]
 pub mod hmac_h {
@@ -4277,7 +4256,6 @@ pub mod hmac_h {
         pub key: [libc::c_uchar; 128],
     }
     use super::ossl_typ_h::{EVP_MD, EVP_MD_CTX};
-    use super::libc;
 }
 #[header_src = "/usr/local/Cellar/openssl/1.0.2t/include/openssl/asn1.h:41"]
 pub mod asn1_h {
@@ -4576,7 +4554,6 @@ pub mod asn1_h {
     pub struct stack_st_X509_ALGOR {
         pub stack: _STACK,
     }
-    use super::libc;
     use super::ossl_typ_h::{ASN1_BOOLEAN, ASN1_STRING, ASN1_OBJECT,
                             ASN1_INTEGER, ASN1_ENUMERATED, ASN1_BIT_STRING,
                             ASN1_OCTET_STRING, ASN1_PRINTABLESTRING,
@@ -4710,7 +4687,6 @@ certificate chain.
     pub struct stack_st_X509_OBJECT {
         pub stack: _STACK,
     }
-    use super::libc;
     use super::_time_t_h::time_t;
     use super::asn1_h::stack_st_ASN1_OBJECT;
     use super::stack_h::_STACK;
@@ -4773,7 +4749,6 @@ pub mod crypto_h {
     }
     use super::stack_h::_STACK;
     use super::bio_h::BIO_METHOD;
-    use super::libc;
     use super::ossl_typ_h::CRYPTO_EX_DATA;
     /* Reason codes. */
     /* Function codes. */
@@ -4910,7 +4885,6 @@ pub mod evp_h {
         pub ec: *mut ec_key_st,
     }
     use super::stack_h::_STACK;
-    use super::libc;
     use super::ossl_typ_h::{rsa_st, dsa_st, dh_st};
     extern "C" {
         #[src_loc = "147:9"]
@@ -4932,7 +4906,6 @@ pub mod bn_h {
                                               _: *mut BN_GENCB)
                              -> libc::c_int>,
     }
-    use super::libc;
     use super::ossl_typ_h::BN_GENCB;
     /* Reason codes. */
     /* Function codes. */
@@ -5050,7 +5023,6 @@ pub mod pem_h {
         unsafe extern "C" fn(_: *mut libc::c_char, _: libc::c_int,
                              _: libc::c_int, _: *mut libc::c_void)
             -> libc::c_int;
-    use super::libc;
     /* Reason codes. */
     /* Function codes. */
     /* Error codes for the PEM functions. */
@@ -5071,7 +5043,6 @@ pub mod comp_h {
         pub ex_data: CRYPTO_EX_DATA,
     }
     use super::ossl_typ_h::{COMP_METHOD, CRYPTO_EX_DATA};
-    use super::libc;
     /* Reason codes. */
     /* Function codes. */
     /* Error codes for the COMP functions. */
@@ -5194,7 +5165,6 @@ pub mod dtls1_h {
         pub map: libc::c_ulong,
         pub max_seq_num: [libc::c_uchar; 8],
     }
-    use super::libc;
     use super::ossl_typ_h::{EVP_CIPHER_CTX, EVP_MD_CTX};
     use super::comp_h::COMP_CTX;
     use super::ssl_h::SSL_SESSION;
@@ -5493,7 +5463,6 @@ pub mod ssl3_h {
         pub offset: libc::c_int,
         pub left: libc::c_int,
     }
-    use super::libc;
     use super::ssl_h::{SSL_CIPHER, SSL_COMP};
     use super::ossl_typ_h::{DH, EVP_CIPHER, EVP_MD};
     use super::ec_h::EC_KEY;
@@ -6226,7 +6195,6 @@ pub mod bio_h {
                              _: *const libc::c_char, _: libc::c_int,
                              _: libc::c_long, _: libc::c_long) -> ();
     use super::crypto_h::bio_st;
-    use super::libc;
     /* Reason codes. */
     /* Function codes. */
     /* Error codes for the BIO functions. */
@@ -6249,7 +6217,6 @@ pub mod ssl2_h {
         pub clen: libc::c_uint,
         pub rlen: libc::c_uint,
     }
-    use super::libc;
     /* server */
     /* SSLv2 */
 /* client */
@@ -6351,7 +6318,6 @@ pub mod zlib_h {
         =
         Option<unsafe extern "C" fn(_: voidpf, _: uInt, _: uInt) -> voidpf>;
     use super::zconf_h::{Bytef, uInt, uLong, voidpf};
-    use super::libc;
     extern "C" {
         #[src_loc = "89:1"]
         pub type internal_state;
@@ -6435,7 +6401,6 @@ pub mod zconf_h {
     pub type Bytef = Byte;
     #[src_loc = "391:1"]
     pub type Byte = libc::c_uchar;
-    use super::libc;
     /* ZCONF_H */
     /* MVS linker does not support external names larger than 8 bytes */
     /* for SEEK_*, off_t, and _LFS64_LARGEFILE */
@@ -6573,7 +6538,6 @@ pub mod proxy_h {
  ******************************************************************************/
     #[src_loc = "28:1"]
     pub type pxProxyFactory = pxProxyFactory_;
-    use super::libc;
     extern "C" {
         #[src_loc = "28:9"]
         pub type pxProxyFactory_;
@@ -7083,7 +7047,6 @@ pub mod tree_h {
     pub const XML_ATTRIBUTE_ID: xmlAttributeType = 2;
     #[src_loc = "207:5"]
     pub const XML_ATTRIBUTE_CDATA: xmlAttributeType = 1;
-    use super::libc;
     use super::xmlstring_h::xmlChar;
     use super::dict_h::_xmlDict;
     /* __XML_TREE_H__ */
@@ -7130,7 +7093,6 @@ pub mod xmlstring_h {
  */
     #[src_loc = "28:1"]
     pub type xmlChar = libc::c_uchar;
-    use super::libc;
     /* __XML_STRING_H__ */
 }
 #[header_src =
@@ -7175,7 +7137,6 @@ pub mod iconv_h {
     /* Define iconv_t ourselves. */
     #[src_loc = "57:1"]
     pub type iconv_t = *mut libc::c_void;
-    use super::libc;
     /* _LIBICONV_H */
     /* (!_POSIX_C_SOURCE || _DARWIN_C_SOURCE) */
 }
@@ -7218,13 +7179,11 @@ pub mod _OSByteOrder_h {
                    as __uint16_t;
     }
     use super::_types_h::__uint16_t;
-    use super::libc;
     /* ! _OS__OSBYTEORDERI386_H */
 }
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/unistd.h:22"]
 pub mod unistd_h {
-    use super::libc;
     use super::_size_t_h::size_t;
     use super::_ssize_t_h::ssize_t;
     extern "C" {
@@ -7242,7 +7201,6 @@ pub mod unistd_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_select.h:22"]
 pub mod _select_h {
-    use super::libc;
     use super::_fd_def_h::fd_set;
     use super::_timeval_h::timeval;
     extern "C" {
@@ -7293,7 +7251,6 @@ pub mod _select_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/fcntl.h:23"]
 pub mod fcntl_h {
-    use super::libc;
     extern "C" {
         /* XXX backwards compatibility */
         /* (_POSIX_C_SOURCE && !_DARWIN_C_SOURCE) */
@@ -7311,7 +7268,6 @@ pub mod fcntl_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/string.h:24"]
 pub mod string_h {
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "71:6"]
@@ -7363,7 +7319,6 @@ pub mod string_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:25"]
 pub mod stdio_h {
-    use super::libc;
     use super::_stdio_h::FILE;
     use super::internal::__va_list_tag;
     extern "C" {
@@ -7397,7 +7352,6 @@ pub mod stdio_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/errno.h:26"]
 pub mod errno_h {
-    use super::libc;
     extern "C" {
         /*
  * Copyright (c) 2000-2012 Apple, Inc. All rights reserved.
@@ -7533,7 +7487,6 @@ pub mod errno_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/malloc/_malloc.h:27"]
 pub mod _malloc_h {
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "40:7"]
@@ -7559,7 +7512,6 @@ pub mod time_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/arpa/inet.h:41"]
 pub mod inet_h {
-    use super::libc;
     use super::in_h::in_addr;
     extern "C" {
         #[no_mangle]
@@ -7572,7 +7524,6 @@ pub mod inet_h {
 }
 #[header_src = "/usr/local/Cellar/gettext/0.20.1/include/libintl.h:41"]
 pub mod libintl_h {
-    use super::libc;
     extern "C" {
         /* Message catalogs for internationalization.
    Copyright (C) 1995-1997, 2000-2016, 2018-2019 Free Software Foundation, Inc.

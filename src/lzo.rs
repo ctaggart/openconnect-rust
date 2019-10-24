@@ -1,7 +1,4 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case,
-         non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(custom_attribute, ptr_wrapping_offset_from)]
-extern crate libc;
+use libc;
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_types/_uint8_t.h:28"]
 pub mod _uint8_t_h {
@@ -34,7 +31,6 @@ pub mod _uint8_t_h {
  */
     #[src_loc = "31:1"]
     pub type uint8_t = libc::c_uchar;
-    use super::libc;
     /* _UINT8_T */
 }
 #[header_src =
@@ -69,7 +65,6 @@ pub mod _uint32_t_h {
  */
     #[src_loc = "31:1"]
     pub type uint32_t = libc::c_uint;
-    use super::libc;
     /* _UINT32_T */
 }
 #[header_src = "/Users/cameron/github/openconnect/lzo.h:28"]
@@ -97,13 +92,11 @@ pub mod lzo_h {
         };
     }
     use super::_uint32_t_h::uint32_t;
-    use super::libc;
     /* AVUTIL_LZO_H */
 }
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/string.h:22"]
 pub mod string_h {
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "72:7"]

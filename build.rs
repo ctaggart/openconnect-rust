@@ -1,40 +1,13 @@
-use std::env;
-
+#[cfg(all(unix, not(target_os = "macos")))]
 fn main() {
 
-    // required libraries
-    // https://www.infradead.org/openconnect/building.html
+    // add unix dependencies below
+    // println!("cargo:rustc-flags=-l readline");
+}
 
-    let target = &env::var("TARGET").unwrap();
-    match target.as_str() {
-        "x86_64-apple-darwin" => {
-            // brew install gettext
-            println!("cargo:rustc-link-search=/usr/local/opt/gettext/lib");
-            println!("cargo:rustc-link-lib=intl");
+#[cfg(target_os = "macos")]
+fn main() {
 
-            // brew install libxml2
-            // println!("cargo:rustc-link-search=/usr/local/opt/libxml2/lib");
-            // println!("cargo:rustc-link-lib=xml2");
-
-            // /usr/lib/libiconv.dylib
-            println!("cargo:rustc-link-lib=iconv");
-
-            // brew install libproxy
-            println!("cargo:rustc-link-search=/usr/local/opt/libproxy/lib");
-            println!("cargo:rustc-link-lib=proxy");
-
-            // brew install lz4
-            // println!("cargo:rustc-link-search=/usr/local/opt/lz4/lib");
-            // println!("cargo:rustc-link-lib=lz4");
-            
-            // brew install openssl
-            // println!("cargo:rustc-link-search=/usr/local/opt/openssl/lib");
-            // println!("cargo:rustc-link-lib=ssl");
-
-            // println!("cargo:rustc-link-search=/usr/local/opt/p11-kit/lib");
-            // println!("cargo:rustc-link-lib=p11-kit");
-
-        },
-        _ => (),
-    }
+    // add macos dependencies below
+    // println!("cargo:rustc-flags=-l edit");
 }

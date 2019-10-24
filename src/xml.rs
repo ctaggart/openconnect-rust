@@ -1,8 +1,4 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case,
-         non_upper_case_globals, unused_assignments, unused_mut)]
-#![feature(const_raw_ptr_to_usize_cast, custom_attribute, extern_types,
-           linkage)]
-extern crate libc;
+use libc;
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/i386/_types.h:21"]
 pub mod _types_h {
@@ -89,7 +85,6 @@ pub mod _types_h {
     /* byte count or error */
     #[src_loc = "120:1"]
     pub type __darwin_time_t = libc::c_long;
-    use super::libc;
     /* _BSD_I386__TYPES_H_ */
     /* time() */
 }
@@ -344,7 +339,6 @@ pub mod _stdio_h {
     #[src_loc = "126:1"]
     pub type FILE = __sFILE;
     use super::sys__types_h::__darwin_off_t;
-    use super::libc;
     extern "C" {
         /* current position in (some) buffer */
         /* read space left for getc() */
@@ -513,7 +507,6 @@ pub mod _uint8_t_h {
  */
     #[src_loc = "31:1"]
     pub type uint8_t = libc::c_uchar;
-    use super::libc;
     /* _UINT8_T */
 }
 #[header_src =
@@ -548,7 +541,6 @@ pub mod _uint32_t_h {
  */
     #[src_loc = "31:1"]
     pub type uint32_t = libc::c_uint;
-    use super::libc;
     /* _UINT32_T */
 }
 #[header_src =
@@ -583,7 +575,6 @@ pub mod _uint64_t_h {
  */
     #[src_loc = "31:1"]
     pub type uint64_t = libc::c_ulonglong;
-    use super::libc;
     /* _UINT64_T */
 }
 #[header_src =
@@ -832,7 +823,6 @@ pub mod _timespec_h {
         pub tv_nsec: libc::c_long,
     }
     use super::_types_h::__darwin_time_t;
-    use super::libc;
     /* _STRUCT_TIMESPEC */
 }
 #[header_src =
@@ -1051,7 +1041,6 @@ pub mod stat_h {
     use super::_blkcnt_t_h::blkcnt_t;
     use super::_blksize_t_h::blksize_t;
     use super::_types_h::{__uint32_t, __int32_t, __int64_t};
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "369:1"]
@@ -1082,7 +1071,6 @@ pub mod xmlstring_h {
  */
     #[src_loc = "28:1"]
     pub type xmlChar = libc::c_uchar;
-    use super::libc;
     /* __XML_STRING_H__ */
 }
 #[header_src =
@@ -1127,7 +1115,6 @@ pub mod iconv_h {
     /* Define iconv_t ourselves. */
     #[src_loc = "57:1"]
     pub type iconv_t = *mut libc::c_void;
-    use super::libc;
     /* _LIBICONV_H */
     /* (!_POSIX_C_SOURCE || _DARWIN_C_SOURCE) */
 }
@@ -1521,7 +1508,6 @@ pub mod tree_h {
     pub type xmlDocPtr = *mut xmlDoc;
     #[src_loc = "549:1"]
     pub type xmlDoc = _xmlDoc;
-    use super::libc;
     use super::xmlstring_h::xmlChar;
     use super::dict_h::_xmlDict;
     extern "C" {
@@ -1614,7 +1600,6 @@ pub mod runetype_h {
         pub __charclasses: *mut _RuneCharClass,
     }
     use super::_types_h::{__darwin_rune_t, __uint32_t, __darwin_size_t};
-    use super::libc;
     extern "C" {
         /* Indicates version A of RuneLocale */
         #[no_mangle]
@@ -1950,7 +1935,6 @@ pub mod socket_h {
     }
     use super::_types_h::__uint8_t;
     use super::_sa_family_t_h::sa_family_t;
-    use super::libc;
     /* !_SYS_SOCKET_H_ */
     /* (!_POSIX_C_SOURCE || _DARWIN_C_SOURCE) */
 }
@@ -1971,7 +1955,6 @@ pub mod netdb_h {
         pub ai_next: *mut addrinfo,
         /* next structure in linked list */
     }
-    use super::libc;
     use super::_socklen_t_h::socklen_t;
     use super::socket_h::sockaddr;
     /* !_NETDB_H_ */
@@ -2509,7 +2492,6 @@ pub mod openconnect_h {
     pub type openconnect_lock_token_vfn
         =
         Option<unsafe extern "C" fn(_: *mut libc::c_void) -> libc::c_int>;
-    use super::libc;
     use super::_uint64_t_h::uint64_t;
     use super::openconnect_internal_h::{vpn_proto, esp, http_auth_state,
                                         C2RustUnnamed_12, C2RustUnnamed_11,
@@ -2748,7 +2730,6 @@ pub mod openconnect_internal_h {
                                                          _: *mut pkt)
                                         -> libc::c_int>,
     }
-    use super::libc;
     use super::_uint32_t_h::uint32_t;
     use super::_time_t_h::time_t;
     use super::gssapi_h::{gss_name_t, gss_ctx_id_t};
@@ -3983,7 +3964,6 @@ pub mod ossl_typ_h {
         pub ctrl: Option<unsafe extern "C" fn() -> libc::c_long>,
         pub callback_ctrl: Option<unsafe extern "C" fn() -> libc::c_long>,
     }
-    use super::libc;
     use super::ssl_h::{SSL_METHOD, ssl2_state_st, ssl3_state_st,
                        dtls1_state_st, stack_st_SSL_CIPHER, cert_st,
                        SSL_SESSION, GEN_SESSION_CB, stack_st_OCSP_RESPID,
@@ -4536,7 +4516,6 @@ pub mod ssl_h {
         pub write_sequence: libc::c_ulong,
         pub tmp: C2RustUnnamed_10,
     }
-    use super::libc;
     use super::ossl_typ_h::{SSL, BIGNUM, X509, CRYPTO_EX_DATA, SSL_CTX,
                             EVP_MD_CTX, COMP_METHOD};
     use super::stack_h::_STACK;
@@ -4637,7 +4616,6 @@ pub mod stack_h {
                                               _: *const libc::c_void)
                              -> libc::c_int>,
     }
-    use super::libc;
 }
 #[header_src = "/usr/local/Cellar/openssl/1.0.2t/include/openssl/hmac.h:33"]
 pub mod hmac_h {
@@ -4713,7 +4691,6 @@ pub mod hmac_h {
         pub key: [libc::c_uchar; 128],
     }
     use super::ossl_typ_h::{EVP_MD, EVP_MD_CTX};
-    use super::libc;
 }
 #[header_src = "/usr/local/Cellar/openssl/1.0.2t/include/openssl/asn1.h:33"]
 pub mod asn1_h {
@@ -4794,7 +4771,6 @@ pub mod asn1_h {
     pub struct stack_st_X509_ALGOR {
         pub stack: _STACK,
     }
-    use super::libc;
     use super::ossl_typ_h::{ASN1_BOOLEAN, ASN1_STRING, ASN1_OBJECT,
                             ASN1_INTEGER, ASN1_ENUMERATED, ASN1_BIT_STRING,
                             ASN1_OCTET_STRING, ASN1_PRINTABLESTRING,
@@ -4931,7 +4907,6 @@ certificate chain.
     pub struct stack_st_X509_OBJECT {
         pub stack: _STACK,
     }
-    use super::libc;
     use super::_time_t_h::time_t;
     use super::asn1_h::stack_st_ASN1_OBJECT;
     use super::stack_h::_STACK;
@@ -4994,7 +4969,6 @@ pub mod crypto_h {
     }
     use super::stack_h::_STACK;
     use super::bio_h::BIO_METHOD;
-    use super::libc;
     use super::ossl_typ_h::CRYPTO_EX_DATA;
     /* Reason codes. */
     /* Function codes. */
@@ -5132,7 +5106,6 @@ pub mod evp_h {
         pub ec: *mut ec_key_st,
     }
     use super::stack_h::_STACK;
-    use super::libc;
     use super::ossl_typ_h::{rsa_st, dsa_st, dh_st};
     extern "C" {
         #[src_loc = "147:9"]
@@ -5154,7 +5127,6 @@ pub mod bn_h {
                                               _: *mut BN_GENCB)
                              -> libc::c_int>,
     }
-    use super::libc;
     use super::ossl_typ_h::BN_GENCB;
     /* Reason codes. */
     /* Function codes. */
@@ -5272,7 +5244,6 @@ pub mod pem_h {
         unsafe extern "C" fn(_: *mut libc::c_char, _: libc::c_int,
                              _: libc::c_int, _: *mut libc::c_void)
             -> libc::c_int;
-    use super::libc;
     /* Reason codes. */
     /* Function codes. */
     /* Error codes for the PEM functions. */
@@ -5293,7 +5264,6 @@ pub mod comp_h {
         pub ex_data: CRYPTO_EX_DATA,
     }
     use super::ossl_typ_h::{COMP_METHOD, CRYPTO_EX_DATA};
-    use super::libc;
     /* Reason codes. */
     /* Function codes. */
     /* Error codes for the COMP functions. */
@@ -5416,7 +5386,6 @@ pub mod dtls1_h {
         pub map: libc::c_ulong,
         pub max_seq_num: [libc::c_uchar; 8],
     }
-    use super::libc;
     use super::ossl_typ_h::{EVP_CIPHER_CTX, EVP_MD_CTX};
     use super::comp_h::COMP_CTX;
     use super::ssl_h::SSL_SESSION;
@@ -5715,7 +5684,6 @@ pub mod ssl3_h {
         pub offset: libc::c_int,
         pub left: libc::c_int,
     }
-    use super::libc;
     use super::ssl_h::{SSL_CIPHER, SSL_COMP};
     use super::ossl_typ_h::{DH, EVP_CIPHER, EVP_MD};
     use super::ec_h::EC_KEY;
@@ -6448,7 +6416,6 @@ pub mod bio_h {
                              _: *const libc::c_char, _: libc::c_int,
                              _: libc::c_long, _: libc::c_long) -> ();
     use super::crypto_h::bio_st;
-    use super::libc;
     /* Reason codes. */
     /* Function codes. */
     /* Error codes for the BIO functions. */
@@ -6471,7 +6438,6 @@ pub mod ssl2_h {
         pub clen: libc::c_uint,
         pub rlen: libc::c_uint,
     }
-    use super::libc;
     /* server */
     /* SSLv2 */
 /* client */
@@ -6573,7 +6539,6 @@ pub mod zlib_h {
         =
         Option<unsafe extern "C" fn(_: voidpf, _: uInt, _: uInt) -> voidpf>;
     use super::zconf_h::{Bytef, uInt, uLong, voidpf};
-    use super::libc;
     extern "C" {
         #[src_loc = "89:1"]
         pub type internal_state;
@@ -6657,7 +6622,6 @@ pub mod zconf_h {
     pub type Bytef = Byte;
     #[src_loc = "391:1"]
     pub type Byte = libc::c_uchar;
-    use super::libc;
     /* ZCONF_H */
     /* MVS linker does not support external names larger than 8 bytes */
     /* for SEEK_*, off_t, and _LFS64_LARGEFILE */
@@ -6805,7 +6769,6 @@ pub mod proxy_h {
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:21"]
 pub mod stdio_h {
     use super::_stdio_h::FILE;
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "69:14"]
@@ -6830,7 +6793,6 @@ pub mod stdio_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/malloc/_malloc.h:22"]
 pub mod _malloc_h {
-    use super::libc;
     extern "C" {
         /*
  * Copyright (c) 2018 Apple Computer, Inc. All rights reserved.
@@ -6871,7 +6833,6 @@ pub mod _malloc_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/unistd.h:23"]
 pub mod unistd_h {
-    use super::libc;
     use super::_size_t_h::size_t;
     use super::_ssize_t_h::ssize_t;
     extern "C" {
@@ -6889,7 +6850,6 @@ pub mod unistd_h {
 #[header_src =
   "/usr/local/Cellar/libxml2/2.9.9_2/include/libxml2/libxml/parser.h:27"]
 pub mod parser_h {
-    use super::libc;
     use super::tree_h::xmlDocPtr;
     extern "C" {
         #[no_mangle]
@@ -6904,7 +6864,6 @@ pub mod parser_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/string.h:29"]
 pub mod string_h {
-    use super::libc;
     extern "C" {
         #[no_mangle]
         #[src_loc = "77:6"]
@@ -6956,7 +6915,6 @@ pub mod _ctype_h {
     pub unsafe extern "C" fn isspace(mut _c: libc::c_int) -> libc::c_int {
         return __istype(_c, 0x4000i64 as libc::c_ulong);
     }
-    use super::libc;
     use super::_types_h::{__darwin_ct_rune_t, __uint32_t};
     use super::runetype_h::_DefaultRuneLocale;
     extern "C" {
@@ -6976,7 +6934,6 @@ pub mod _ctype_h {
 #[header_src =
   "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/errno.h:31"]
 pub mod errno_h {
-    use super::libc;
     extern "C" {
         /*
  * Copyright (c) 2000-2012 Apple, Inc. All rights reserved.
@@ -7162,7 +7119,6 @@ pub mod errno_h {
 }
 #[header_src = "/usr/local/Cellar/gettext/0.20.1/include/libintl.h:33"]
 pub mod libintl_h {
-    use super::libc;
     extern "C" {
         /* Look up MSGID in the DOMAINNAME message catalog for the current
    LC_MESSAGES locale.  */
